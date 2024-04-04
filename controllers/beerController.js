@@ -46,13 +46,14 @@ exports.beer_detail = asyncHandler(async (req, res, next) => {
     Beer.findById(req.params.id).populate("brewery").populate("type").exec(),
     BeerSku.find({ beer: req.params.id }).exec(),
   ]);
+
   res.render("beer_detail", {
     beer: beer,
     beer_skus: beerSkus,
   });
 });
 
-// Display beer create for on GET
+// Display beer create form on GET
 exports.beer_create_get = asyncHandler(async (req, res, next) => {
   res.send("NOT IMPLEMENTED: Beer create GET");
 });
@@ -62,7 +63,7 @@ exports.beer_create_post = asyncHandler(async (req, res, next) => {
   res.send("NOT IMPLEMENTED: Beer create POST");
 });
 
-// Display beer delete for on GET
+// Display beer delete form on GET
 exports.beer_delete_get = asyncHandler(async (req, res, next) => {
   res.send(`NOT IMPLEMENTED: Beer delete GET: ${req.params.id}`);
 });
@@ -72,7 +73,7 @@ exports.beer_delete_post = asyncHandler(async (req, res, next) => {
   res.send(`NOT IMPLEMENTED: Beer delete POST: ${req.params.id}`);
 });
 
-// Display beer update for on GET
+// Display beer update form on GET
 exports.beer_update_get = asyncHandler(async (req, res, next) => {
   res.send(`NOT IMPLEMENTED: Beer update GET: ${req.params.id}`);
 });

@@ -11,7 +11,7 @@ exports.beersku_detail = asyncHandler(async (req, res, next) => {
   res.send(`NOT IMPLEMENTED: Beer SKU Detail: ${req.params.id}`);
 });
 
-// Display beer SKU create for on GET
+// Display beer SKU create form on GET
 exports.beersku_create_get = asyncHandler(async (req, res, next) => {
   res.send("NOT IMPLEMENTED: Beer SKU create GET");
 });
@@ -21,7 +21,7 @@ exports.beersku_create_post = asyncHandler(async (req, res, next) => {
   res.send("NOT IMPLEMENTED: Beer SKU create POST");
 });
 
-// Display beer SKU delete for on GET
+// Display beer SKU delete form on GET
 exports.beersku_delete_get = asyncHandler(async (req, res, next) => {
   res.send(`NOT IMPLEMENTED: Beer SKU delete GET: ${req.params.id}`);
 });
@@ -31,7 +31,7 @@ exports.beersku_delete_post = asyncHandler(async (req, res, next) => {
   res.send(`NOT IMPLEMENTED: Beer SKU delete POST: ${req.params.id}`);
 });
 
-// Display beer SKU update for on GET
+// Display beer SKU update form on GET
 exports.beersku_update_get = asyncHandler(async (req, res, next) => {
   res.send(`NOT IMPLEMENTED: Beer SKU update GET: ${req.params.id}`);
 });

@@ -11,7 +11,7 @@ exports.type_detail = asyncHandler(async (req, res, next) => {
   res.send(`NOT IMPLEMENTED: Type Detail: ${req.params.id}`);
 });
 
-// Display Type create for on GET
+// Display Type create form on GET
 exports.type_create_get = asyncHandler(async (req, res, next) => {
   res.send("NOT IMPLEMENTED: Type create GET");
 });
@@ -21,7 +21,7 @@ exports.type_create_post = asyncHandler(async (req, res, next) => {
   res.send("NOT IMPLEMENTED: Type create POST");
 });
 
-// Display Type delete for on GET
+// Display Type delete form on GET
 exports.type_delete_get = asyncHandler(async (req, res, next) => {
   res.send(`NOT IMPLEMENTED: Type delete GET: ${req.params.id}`);
 });
@@ -31,7 +31,7 @@ exports.type_delete_post = asyncHandler(async (req, res, next) => {
   res.send(`NOT IMPLEMENTED: Type delete POST: ${req.params.id}`);
 });
 
-// Display Type update for on GET
+// Display Type update form on GET
 exports.type_update_get = asyncHandler(async (req, res, next) => {
   res.send(`NOT IMPLEMENTED: Type update GET: ${req.params.id}`);
 });

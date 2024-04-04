@@ -11,7 +11,7 @@ exports.brewery_detail = asyncHandler(async (req, res, next) => {
   res.send(`NOT IMPLEMENTED: Brewery Detail: ${req.params.id}`);
 });
 
-// Display Brewery create for on GET
+// Display Brewery create form on GET
 exports.brewery_create_get = asyncHandler(async (req, res, next) => {
   res.send("NOT IMPLEMENTED: Brewery create GET");
 });
@@ -21,7 +21,7 @@ exports.brewery_create_post = asyncHandler(async (req, res, next) => {
   res.send("NOT IMPLEMENTED: Brewery create POST");
 });
 
-// Display Brewery delete for on GET
+// Display Brewery delete form on GET
 exports.brewery_delete_get = asyncHandler(async (req, res, next) => {
   res.send(`NOT IMPLEMENTED: Brewery delete GET: ${req.params.id}`);
 });
@@ -31,7 +31,7 @@ exports.brewery_delete_post = asyncHandler(async (req, res, next) => {
   res.send(`NOT IMPLEMENTED: Brewery delete POST: ${req.params.id}`);
 });
 
-// Display Brewery update for on GET
+// Display Brewery update form on GET
 exports.brewery_update_get = asyncHandler(async (req, res, next) => {
   res.send(`NOT IMPLEMENTED: Brewery update GET: ${req.params.id}`);
 });
