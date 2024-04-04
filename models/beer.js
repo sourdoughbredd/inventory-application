@@ -13,7 +13,7 @@ const BeerSchema = new Schema({
 });
 
 // Virtual for beer's URL
-BeerSchema.virtual(url).get(function () {
+BeerSchema.virtual("url").get(function () {
   return `/inventory/beer/${this._id}`;
 });
 
