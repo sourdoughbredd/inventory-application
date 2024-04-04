@@ -26,9 +26,17 @@ exports.index = asyncHandler(async (req, res, next) => {
   });
 });
 
-// Display list of all beers
+// Display list of all beers with name, brewery name, type, description, flavor notes
 exports.beer_list = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Beer List");
+  const beers = await Beer.find({}, "name brewery")
+    .sort({ name: 1 })
+    .populate({ path: "brewery", select: "name" })
+    .exec();
+
+  res.render("beer_list", {
+    title: "Beer List",
+    beer_list: beers,
+  });
 });
 
 // Display detail page for a specific beer

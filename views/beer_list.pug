@@ -1,0 +1,12 @@
+extends layout 
+
+block content
+  h1= title 
+  if beer_list.length
+    ul 
+      each beer in beer_list 
+        li
+          a(href=beer.url) #{beer.name}
+          | , #{beer.brewery.name}
+  else 
+    p There are no beers.
