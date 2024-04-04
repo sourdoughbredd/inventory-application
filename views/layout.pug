@@ -1,7 +1,35 @@
 doctype html
-html
+html(lang='en')
   head
     title= title
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
-    block content
+    div
+      div.page-content
+        block sidebar
+          ul.sidebar-nav
+            li
+              a(href='/inventory') Home
+            li
+              a(href='/inventory/beers') All beers
+            li
+              a(href='/inventory/breweries') All breweries
+            li
+              a(href='/inventory/types') All beer types
+            li
+              a(href='/inventory/beerskus') All beer SKUs
+            li
+              hr
+            li
+              a(href='/inventory/beer/create') Create new beer
+            li
+              a(href='/inventory/brewery/create') Create new brewery
+            li
+              a(href='/inventory/type/create') Create new beer type
+            li
+              a(href='/inventory/beersku/create') Create new beer SKU
+
+        div.dynamic-content
+          block content
