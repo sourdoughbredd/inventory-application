@@ -1,9 +1,29 @@
 const Beer = require("../models/beer");
+const BeerSku = require("../models/beerSku");
+const Brewery = require("../models/brewery");
+const Type = require("../models/type");
 const asyncHandler = require("express-async-handler");
 
 // Display the site home page
 exports.index = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Site Home Page");
+  // Get records
+  const [numBeers, numBeerSkus, numBeerSkusInStock, numBreweries, numTypes] =
+    await Promise.all([
+      Beer.countDocuments({}).exec(),
+      BeerSku.countDocuments({}).exec(),
+      BeerSku.countDocuments({ stock: { $gt: 0 } }).exec(),
+      Brewery.countDocuments({}).exec(),
+      Type.countDocuments({}).exec(),
+    ]);
+
+  res.render("index", {
+    title: "Beer Inventory Home",
+    beer_count: numBeers,
+    beersku_count: numBeerSkus,
+    beersku_in_stock_count: numBeerSkusInStock,
+    brewery_count: numBreweries,
+    type_count: numTypes,
+  });
 });
 
 // Display list of all beers

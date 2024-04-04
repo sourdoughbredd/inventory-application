@@ -2,4 +2,15 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
+  p Welcome to your #[em Beer Inventory Management Site]!
+
+  h1 Inventory Status
+
+  p Your inventory has the following record counts:
+
+  ul
+    li #[strong Beers:] !{beer_count}
+    li #[strong Beer SKUs:] !{beersku_count}
+    li #[strong Beer SKUs in stock:] !{beersku_in_stock_count}
+    li #[strong Breweries:] !{brewery_count}
+    li #[strong Beer Types:] !{type_count} 
