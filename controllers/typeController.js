@@ -1,4 +1,4 @@
-const Type = require("../models/Type");
+const Type = require("../models/type");
 const asyncHandler = require("express-async-handler");
 
 // Display list of all types
