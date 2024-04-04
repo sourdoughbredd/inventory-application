@@ -41,7 +41,15 @@ exports.beer_list = asyncHandler(async (req, res, next) => {
 
 // Display detail page for a specific beer
 exports.beer_detail = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Beer Detail: ${req.params.id}`);
+  // Get beer and its SKUs
+  const [beer, beerSkus] = await Promise.all([
+    Beer.findById(req.params.id).populate("brewery").populate("type").exec(),
+    BeerSku.find({ beer: req.params.id }).exec(),
+  ]);
+  res.render("beer_detail", {
+    beer: beer,
+    beer_skus: beerSkus,
+  });
 });
 
 // Display beer create for on GET

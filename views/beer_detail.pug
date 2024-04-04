@@ -1,0 +1,31 @@
+extends layout
+
+block content 
+  h1 Beer Detail: #{beer.name}
+
+  p #[strong Brewery: ]
+    a(href=beer.brewery.url) #{beer.brewery.name}
+  p #[strong Type: ]
+    a(href=beer.type.url) #{beer.type.name}
+  p #[strong Description: ] #{beer.description}
+  p #[strong ABV: ] #{beer.abv}
+  p #[strong IBU: ] #{beer.ibu}
+  p 
+    strong Flavors:
+    each flavor, idx in beer.flavors
+        |  #{flavor}#{idx < beer.flavors.length - 1 ? ', ' : ''}
+
+  div.skus-container
+    h2 SKUs 
+
+    each sku in beer_skus 
+      hr
+      p #[strong ID: ]
+        a(href=sku.url) #{sku._id}
+      p #[strong Packaging: ]
+      ul 
+        li Type: #{sku.packaging.type}
+        li Volume: #{sku.packaging.volume_oz} oz (#{sku.packaging.volume_ml} ml)
+        li Quantity: #{sku.packaging.quantity}
+      p #[strong Stock Count: ] #{sku.stock}
+      p #[strong Price: ] $#{sku.price}
