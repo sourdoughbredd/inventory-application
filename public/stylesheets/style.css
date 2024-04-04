@@ -3,6 +3,20 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-a {
-  color: #00B7FF;
+.page-content {
+  display: flex;
+  max-width: 1600px;
+}
+
+.sidebar-nav {
+  padding: 0 16px;
+  list-style: none;
+}
+
+.sidebar-nav a {
+  text-decoration: none;
+}
+
+.dynamic-content {
+  flex-grow: 1;
 }
