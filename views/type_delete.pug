@@ -12,5 +12,8 @@ block content
           | &nbsp;- #{beer.brewery.name}
   else 
     p #[strong Are you sure you want to delete this beer type?]
+    p #[strong ID]: #{type._id}
     form(method="POST")
+      div.form-group
+        input(type="hidden" name="typeid" value=type._id)
       button(type="submit") Delete
