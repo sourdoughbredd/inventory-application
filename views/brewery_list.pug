@@ -1,0 +1,12 @@
+extends layout 
+
+block content
+  h1= title 
+  if brewery_list.length
+    ul 
+      each brewery in brewery_list 
+        li
+          a(href=brewery.url) #{brewery.name}
+          | &nbsp;- #{brewery.city}, #{brewery.state}, #{brewery.country}
+  else 
+    p There are no breweries.

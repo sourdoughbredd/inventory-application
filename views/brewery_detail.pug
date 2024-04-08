@@ -1,0 +1,17 @@
+extends layout
+
+block content 
+  h1 Brewery Detail: #{brewery.name}
+
+  p #[strong Name: ] #{brewery.name}
+  p #[strong Location: ] #{brewery.city}, #{brewery.state}, #{brewery.country}
+  p #[strong Description: ] #{brewery.description}
+
+  div.brewery-beers-container
+    h2 Beers 
+    hr
+    ul
+      each beer in brewery_beers
+        li
+            a(href=beer.url) #{beer.name}
+            | , #{beer.type.name}

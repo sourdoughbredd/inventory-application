@@ -1,14 +1,33 @@
 const Brewery = require("../models/brewery");
+const Beer = require("../models/beer");
 const asyncHandler = require("express-async-handler");
 
 // Display list of all breweries
 exports.brewery_list = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Brewery List");
+  const breweries = await Brewery.find({}, "name city state country")
+    .sort({ name: 1 })
+    .exec();
+
+  res.render("brewery_list", {
+    title: "Brewery List",
+    brewery_list: breweries,
+  });
 });
 
 // Display detail page for a specific Brewery
 exports.brewery_detail = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Brewery Detail: ${req.params.id}`);
+  const [brewery, breweryBeers] = await Promise.all([
+    Brewery.findById(
+      req.params.id,
+      "name city state country description"
+    ).exec(),
+    Beer.find({ brewery: req.params.id }, "name type").populate("type").exec(),
+  ]);
+
+  res.render("brewery_detail", {
+    brewery,
+    brewery_beers: breweryBeers,
+  });
 });
 
 // Display Brewery create form on GET
