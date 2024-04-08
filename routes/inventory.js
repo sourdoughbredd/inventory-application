@@ -22,16 +22,16 @@ router.get("/beer/create", beer_controller.beer_create_get);
 router.post("/beer/create", beer_controller.beer_create_post);
 
 // GET request for deleting a beer
-router.get("/beer/delete", beer_controller.beer_delete_get);
+router.get("/beer/:id/delete", beer_controller.beer_delete_get);
 
 // POST request for deleting a beer
-router.post("/beer/delete", beer_controller.beer_delete_post);
+router.post("/beer/:id/delete", beer_controller.beer_delete_post);
 
 // GET request for updating a beer
-router.get("/beer/update", beer_controller.beer_update_get);
+router.get("/beer/:id/update", beer_controller.beer_update_get);
 
 // POST request for updating a beer
-router.post("/beer/update", beer_controller.beer_update_post);
+router.post("/beer/:id/update", beer_controller.beer_update_post);
 
 // GET request for a single beer detail
 router.get("/beer/:id", beer_controller.beer_detail);
@@ -48,16 +48,16 @@ router.get("/brewery/create", brewery_controller.brewery_create_get);
 router.post("/brewery/create", brewery_controller.brewery_create_post);
 
 // GET request for deleting a brewery
-router.get("/brewery/delete", brewery_controller.brewery_delete_get);
+router.get("/brewery/:id/delete", brewery_controller.brewery_delete_get);
 
 // POST request for deleting a brewery
-router.post("/brewery/delete", brewery_controller.brewery_delete_post);
+router.post("/brewery/:id/delete", brewery_controller.brewery_delete_post);
 
 // GET request for updating a brewery
-router.get("/brewery/update", brewery_controller.brewery_update_get);
+router.get("/brewery/:id/update", brewery_controller.brewery_update_get);
 
 // POST request for updating a brewery
-router.post("/brewery/update", brewery_controller.brewery_update_post);
+router.post("/brewery/:id/update", brewery_controller.brewery_update_post);
 
 // GET request for a single brewery detail
 router.get("/brewery/:id", brewery_controller.brewery_detail);
@@ -74,16 +74,16 @@ router.get("/type/create", type_controller.type_create_get);
 router.post("/type/create", type_controller.type_create_post);
 
 // GET request for deleting a type
-router.get("/type/delete", type_controller.type_delete_get);
+router.get("/type/:id/delete", type_controller.type_delete_get);
 
 // POST request for deleting a type
-router.post("/type/delete", type_controller.type_delete_post);
+router.post("/type/:id/delete", type_controller.type_delete_post);
 
 // GET request for updating a type
-router.get("/type/update", type_controller.type_update_get);
+router.get("/type/:id/update", type_controller.type_update_get);
 
 // POST request for updating a type
-router.post("/type/update", type_controller.type_update_post);
+router.post("/type/:id/update", type_controller.type_update_post);
 
 // GET request for a single type detail
 router.get("/type/:id", type_controller.type_detail);
@@ -100,16 +100,16 @@ router.get("/beerSku/create", beersku_controller.beersku_create_get);
 router.post("/beerSku/create", beersku_controller.beersku_create_post);
 
 // GET request for deleting a beer SKU
-router.get("/beerSku/delete", beersku_controller.beersku_delete_get);
+router.get("/beerSku/:id/delete", beersku_controller.beersku_delete_get);
 
 // POST request for deleting a beer SKU
-router.post("/beerSku/delete", beersku_controller.beersku_delete_post);
+router.post("/beerSku/:id/delete", beersku_controller.beersku_delete_post);
 
 // GET request for updating a beer SKU
-router.get("/beerSku/update", beersku_controller.beersku_update_get);
+router.get("/beerSku/:id/update", beersku_controller.beersku_update_get);
 
 // POST request for updating a beer SKU
-router.post("/beerSku/update", beersku_controller.beersku_update_post);
+router.post("/beerSku/:id/update", beersku_controller.beersku_update_post);
 
 // GET request for a single beer SKU detail
 router.get("/beerSku/:id", beersku_controller.beersku_detail);
