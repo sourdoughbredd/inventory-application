@@ -13,7 +13,7 @@ const PackagingSchema = new Schema(
 );
 
 const BeerSkuSchema = new Schema({
-  beer: { type: Schema.Types.ObjectId, required: true },
+  beer: { type: Schema.Types.ObjectId, ref: "Beer", required: true },
   packaging: { type: PackagingSchema, required: true },
   stock: { type: Number, required: true, default: 0 },
   price: { type: Number, required: true },
