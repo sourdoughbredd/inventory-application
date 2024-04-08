@@ -1,0 +1,13 @@
+extends layout
+
+block content 
+  h1 Type Detail: #{type.name}
+
+  div.type-beers-container
+    h2 Beers of this Type
+    hr
+    ul
+      each beer in type_beers
+        li
+            a(href=beer.url) #{beer.name}
+            | , #{beer.brewery.name}

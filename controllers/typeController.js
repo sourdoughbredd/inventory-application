@@ -1,4 +1,5 @@
 const Type = require("../models/type");
+const Beer = require("../models/beer");
 const asyncHandler = require("express-async-handler");
 
 // Display list of all types
@@ -13,7 +14,18 @@ exports.type_list = asyncHandler(async (req, res, next) => {
 
 // Display detail page for a specific Type
 exports.type_detail = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Type Detail: ${req.params.id}`);
+  const [type, typeBeers] = await Promise.all([
+    Type.findById(req.params.id).exec(),
+    Beer.find({ type: req.params.id }, "name brewery")
+      .populate("brewery")
+      .sort({ name: 1 })
+      .exec(),
+  ]);
+
+  res.render("type_detail", {
+    type,
+    type_beers: typeBeers,
+  });
 });
 
 // Display Type create form on GET
