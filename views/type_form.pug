@@ -1,0 +1,10 @@
+extends layout 
+
+block content
+  h1 #{title}
+
+  form(method="POST")
+    div.form-group
+      label(for="type") Beer Type Name 
+      input(type="text" name="type" required placeholder="Pale Ale, Belgian Blonde, West Coast IPA, etc.", value=(type === undefined ? "" : type.name))
+    button(type="submit") Submit
