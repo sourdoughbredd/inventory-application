@@ -5,6 +5,12 @@ block content
 
   form(method="POST")
     div.form-group
-      label(for="type") Beer Type Name 
-      input(type="text" name="type" required placeholder="Pale Ale, Belgian Blonde, West Coast IPA, etc.", value=(type === undefined ? "" : type.name))
+      label(for="name") Beer Type Name 
+      input(type="text" name="name" required placeholder="Pale Ale, Belgian Blonde, West Coast IPA, etc.", value=(type === undefined ? "" : type.name))
     button(type="submit") Submit
+
+  if errors
+    h3 Please fix the following errors: 
+    ul
+     for error in errors 
+       li!= error.msg
