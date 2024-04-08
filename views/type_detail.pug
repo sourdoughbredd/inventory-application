@@ -1,7 +1,13 @@
 extends layout
 
 block content 
-  h1 Type Detail: #{type.name}
+  h1 Beer Type Detail: #{type.name}
+  p
+    
+  p
+    a(href=type.url + "/delete") Delete Beer Type
+  p
+    a(href=type.url + "/update") Update Beer Type
 
   div.type-beers-container
     h2 Beers of this Type
