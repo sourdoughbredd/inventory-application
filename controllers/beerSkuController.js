@@ -3,7 +3,15 @@ const asyncHandler = require("express-async-handler");
 
 // Display list of all beer SKUs
 exports.beersku_list = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Beer SKU List");
+  const beerSkus = await BeerSku.find({})
+    .populate("beer")
+    .sort({ "beer.name": 1 })
+    .exec();
+
+  res.render("beersku_list", {
+    title: "Beer SKU List",
+    beersku_list: beerSkus,
+  });
 });
 
 // Display detail page for a specific beer SKU

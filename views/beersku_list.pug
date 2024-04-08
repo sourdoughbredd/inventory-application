@@ -1,0 +1,15 @@
+extends layout 
+
+block content
+  h1= title 
+  if beersku_list.length
+    ul 
+      each sku in beersku_list 
+        li
+          a(href=sku.url) #{sku._id}
+          | &nbsp;- #{sku.beer.name}: 
+          | &nbsp;#{sku.packaging.quantity}ct,
+          | &nbsp;#{sku.packaging.volume_oz}oz (#{sku.packaging.volume_ml}ml),
+          | &nbsp;#{sku.packaging.type}
+  else 
+    p There are no beer Skus.
