@@ -5,6 +5,7 @@ const asyncHandler = require("express-async-handler");
 // Display list of all breweries
 exports.brewery_list = asyncHandler(async (req, res, next) => {
   const breweries = await Brewery.find({}, "name city state country")
+    .collation({ locale: "en" })
     .sort({ name: 1 })
     .exec();
 

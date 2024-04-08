@@ -5,7 +5,10 @@ const { body, validationResult } = require("express-validator");
 
 // Display list of all types
 exports.type_list = asyncHandler(async (req, res, next) => {
-  const types = await Type.find({}).sort({ name: 1 }).exec();
+  const types = await Type.find({})
+    .collation({ locale: "en" })
+    .sort({ name: 1 })
+    .exec();
 
   res.render("type_list", {
     title: "Beer Types",
@@ -19,6 +22,7 @@ exports.type_detail = asyncHandler(async (req, res, next) => {
     Type.findById(req.params.id).exec(),
     Beer.find({ type: req.params.id }, "name brewery")
       .populate("brewery")
+      .collation({ locale: "en" })
       .sort({ name: 1 })
       .exec(),
   ]);

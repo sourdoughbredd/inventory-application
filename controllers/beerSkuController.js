@@ -4,6 +4,7 @@ const asyncHandler = require("express-async-handler");
 // Display list of all beer SKUs
 exports.beersku_list = asyncHandler(async (req, res, next) => {
   const beerSkus = await BeerSku.find({})
+    .collation({ locale: "en" })
     .populate("beer")
     .sort({ "beer.name": 1 })
     .exec();
