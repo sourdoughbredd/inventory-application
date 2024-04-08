@@ -64,7 +64,9 @@ exports.type_create_post = [
       });
     } else {
       // No errors. Save to database unless it already exists.
-      const typeExists = await Type.findOne({ name: req.body.name }).exec();
+      const typeExists = await Type.findOne({ name: req.body.name })
+        .collation({ locale: "en", strength: 2 })
+        .exec();
       if (typeExists) {
         // Already exists. Redirect to detail page.
         res.redirect(typeExists.url);
@@ -120,10 +122,63 @@ exports.type_delete_post = asyncHandler(async (req, res, next) => {
 
 // Display Type update form on GET
 exports.type_update_get = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Type update GET: ${req.params.id}`);
+  const type = await Type.findById(req.params.id).exec();
+
+  if (type == null) {
+    // Typ enot foudn by ID. Show type list page.
+    res.redirect("/inventory/types");
+  }
+
+  res.render("type_form", {
+    title: "Update Beer Type: " + type.name,
+    type: type,
+  });
 });
 
 // Handle Type update on POST
-exports.type_update_post = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Type update POST: ${req.params.id}`);
-});
+exports.type_update_post = [
+  // Validate and sanitize
+  body("name", "Name must contain at least 2 characters")
+    .trim()
+    .isLength({ min: 2 })
+    .escape(),
+
+  // Process request
+  asyncHandler(async (req, res, next) => {
+    // Extract validation results
+    const errors = validationResult(req);
+
+    // Create new type object
+    const type = new Type({
+      _id: req.params.id,
+      name: req.body.name,
+    });
+
+    // Process
+    if (!errors.isEmpty()) {
+      // Validation errors detected. Send error data back to form.
+      res.render("type_form", {
+        title: "Update Beer Type",
+        type: type,
+        errors: errors.array(),
+      });
+    } else {
+      // No errors. Save to database unless it already exists.
+      const typeExists = await Type.findOne({ name: req.body.name })
+        .collation({ locale: "en", strength: 2 })
+        .exec();
+      if (typeExists) {
+        // Already exists. Redirect to detail page.
+        res.redirect(typeExists.url);
+      } else {
+        // Type does not exist. Update and redirect to detail page
+        const updatedType = await Type.findByIdAndUpdate(
+          req.params.id,
+          type,
+          {}
+        );
+        res.redirect(updatedType.url);
+      }
+    }
+  }),
+];
