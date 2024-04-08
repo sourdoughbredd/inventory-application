@@ -79,7 +79,22 @@ exports.type_create_post = [
 
 // Display Type delete form on GET
 exports.type_delete_get = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Type delete GET: ${req.params.id}`);
+  // Get type and beers of this type
+  const [type, beersOfType] = await Promise.all([
+    Type.findById(req.params.id).exec(),
+    Beer.find({ type: req.params.id }).populate("brewery").exec(),
+  ]);
+
+  if (type === null) {
+    // No results for this ID.
+    res.redirect("/inventory/types");
+  }
+
+  res.render("type_delete", {
+    title: "Delete Beer Type: " + type.name,
+    type: type,
+    beers_of_type: beersOfType,
+  });
 });
 
 // Handle Type delete on POST
