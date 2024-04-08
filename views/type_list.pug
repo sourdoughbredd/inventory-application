@@ -1,0 +1,11 @@
+extends layout 
+
+block content
+  h1= title 
+  if type_list.length
+    ul 
+      each type in type_list 
+        li 
+          a(href=type.url) #{type.name}
+  else 
+    p There are no beer types.

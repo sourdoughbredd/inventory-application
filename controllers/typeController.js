@@ -3,7 +3,12 @@ const asyncHandler = require("express-async-handler");
 
 // Display list of all types
 exports.type_list = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Type List");
+  const types = await Type.find({}).sort({ name: 1 }).exec();
+
+  res.render("type_list", {
+    title: "Beer Types",
+    type_list: types,
+  });
 });
 
 // Display detail page for a specific Type
