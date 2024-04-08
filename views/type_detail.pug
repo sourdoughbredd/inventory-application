@@ -1,9 +1,8 @@
 extends layout
 
 block content 
-  h1 Beer Type Detail: #{type.name}
-  p
-    
+  h1 Beer Type: #{type.name}
+  p #[strong Name]: #{type.name}
   p
     a(href=type.url + "/delete") Delete Beer Type
   p
