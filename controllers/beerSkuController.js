@@ -16,7 +16,11 @@ exports.beersku_list = asyncHandler(async (req, res, next) => {
 
 // Display detail page for a specific beer SKU
 exports.beersku_detail = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Beer SKU Detail: ${req.params.id}`);
+  const beerSku = await BeerSku.findById(req.params.id).populate("beer").exec();
+
+  res.render("beersku_detail", {
+    beersku: beerSku,
+  });
 });
 
 // Display beer SKU create form on GET
