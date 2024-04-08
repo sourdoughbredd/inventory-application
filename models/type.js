@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const TypeSchema = new Schema({
-  name: { type: String, required: true, maxLength: 50 },
+  name: { type: String, unique: true, required: true, maxLength: 50 },
 });
 
 // Virtual for Type's url
