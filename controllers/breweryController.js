@@ -113,9 +113,7 @@ exports.brewery_delete_get = asyncHandler(async (req, res, next) => {
   // Get the brewery and it's beers
   const [brewery, breweryBeers] = await Promise.all([
     Brewery.findById(req.params.id).exec(),
-    Beer.find({ brewery: req.params.id })
-      .collation({ locale: "en" })
-      .sort("name"),
+    Beer.find({ brewery: req.params.id }).exec(),
   ]);
 
   if (brewery === null) {
@@ -132,7 +130,22 @@ exports.brewery_delete_get = asyncHandler(async (req, res, next) => {
 
 // Handle Brewery delete on POST
 exports.brewery_delete_post = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Brewery delete POST: ${req.params.id}`);
+  // Get the brewery and their beers
+  const [brewery, breweryBeers] = await Promise.all([
+    Brewery.findById(req.body.breweryid).exec(),
+    Beer.find({ brewery: req.body.breweryid }).exec(),
+  ]);
+
+  if (breweryBeers.length > 0) {
+    // Beers still existing for this brewery. Show delete form
+    res.render("brewery_delete", {
+      title: "Delete Brewery: " + brewery.name,
+      brewery,
+      brewery_beers: breweryBeers,
+    });
+  }
+  await Brewery.findByIdAndDelete(req.body.breweryid);
+  res.redirect("/inventory/breweries");
 });
 
 // Display Brewery update form on GET
