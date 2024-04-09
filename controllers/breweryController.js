@@ -150,7 +150,17 @@ exports.brewery_delete_post = asyncHandler(async (req, res, next) => {
 
 // Display Brewery update form on GET
 exports.brewery_update_get = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Brewery update GET: ${req.params.id}`);
+  const brewery = await Brewery.findById(req.params.id);
+
+  if (brewery === null) {
+    // Brewery not found with this ID. Render brewery list.
+    res.redirect("/inventory/breweries");
+  }
+
+  res.render("brewery_form", {
+    title: "Update Brewery: " + brewery.name,
+    brewery,
+  });
 });
 
 // Handle Brewery update on POST
