@@ -33,7 +33,7 @@ exports.brewery_detail = asyncHandler(async (req, res, next) => {
 
 // Display Brewery create form on GET
 exports.brewery_create_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Brewery create GET");
+  res.render("brewery_form", { title: "Add New Brewery" });
 });
 
 // Handle Brewery create on POST

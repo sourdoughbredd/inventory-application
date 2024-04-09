@@ -1,0 +1,26 @@
+extends layout 
+
+block content 
+  h1 #{title}
+
+  form(method="POST")
+    div.form-group
+      label(for="name") Brewery Name
+      input(type="text" name="name" required placeholder="Stone Brewing, Ballast Point Brewery, Lagunitas, etc." value=(brewery === undefined ? "" : brewery.name))
+    div.form-group
+      label(for="city") City
+      input(type="text" name="city" placeholder="San Diego, Petaluma, etc." value=(brewery === undefined ? "" : brewery.city))
+    div.form-group
+      label(for="state") State
+      input(type="text" name="state" placeholder="California, etc." value=(brewery === undefined ? "" : brewery.state))
+    div.form-group
+      label(for="country") Country
+      input(type="text" name="country" placeholder="USA, Belgium, etc." value=(brewery === undefined ? "" : brewery.country))
+    div.form-group
+      label(for="longitude_deg") Longitude (in degrees)
+      input(type="text" name="longitude_deg" placeholder="40.374, -20.243, etc." value=(brewery === undefined ? "" : brewery.location.coordinates[0]))    
+    div.form-group
+      label(for="latitude_deg") Latitude (in degrees)
+      input(type="text" name="latitude_deg" placeholder="22.995, -18.847, etc." value=(brewery === undefined ? "" : brewery.location.coordinates[1]))
+
+    button(type="submit") Submit
