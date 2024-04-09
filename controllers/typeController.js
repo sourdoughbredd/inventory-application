@@ -35,7 +35,7 @@ exports.type_detail = asyncHandler(async (req, res, next) => {
 
 // Display Type create form on GET
 exports.type_create_get = asyncHandler(async (req, res, next) => {
-  res.render("type_form", { title: "Create Beer Type" });
+  res.render("type_form", { title: "Add New Beer Type" });
 });
 
 // Handle Type create on POST
