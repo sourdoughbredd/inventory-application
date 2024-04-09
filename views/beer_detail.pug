@@ -14,6 +14,10 @@ block content
     strong Flavors:
     each flavor, idx in beer.flavors
         |  #{flavor}#{idx < beer.flavors.length - 1 ? ', ' : ''}
+  p
+    a(href=beer.url + "/delete") Delete Beer
+  p
+    a(href=beer.url + "/update") Update Beer
 
   div.skus-container
     h2 SKUs 
