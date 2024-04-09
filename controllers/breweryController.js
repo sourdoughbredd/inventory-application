@@ -3,6 +3,33 @@ const Beer = require("../models/beer");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
+// Helper to create breweries with optional args
+function breweryCreate(
+  _id,
+  name,
+  description,
+  city,
+  state,
+  country,
+  latitude_deg,
+  longitude_deg
+) {
+  const brewerydetail = { name };
+  if (_id) brewerydetail._id = _id;
+  if (description) brewerydetail.description = description;
+  if (city) brewerydetail.city = city;
+  if (state) brewerydetail.state = state;
+  if (country) brewerydetail.country = country;
+  if (latitude_deg && longitude_deg) {
+    brewerydetail.location = {
+      type: "Point",
+      coordinates: [Number(latitude_deg), Number(longitude_deg)],
+    };
+  }
+
+  return new Brewery(brewerydetail);
+}
+
 // Display list of all breweries
 exports.brewery_list = asyncHandler(async (req, res, next) => {
   const breweries = await Brewery.find({}, "name city state country")
@@ -43,6 +70,7 @@ exports.brewery_create_post = [
   body("name", "Name must be at least 2 characters.")
     .trim()
     .isLength({ min: 2 }),
+  body("description").optional({ values: "falsy" }).trim(),
   body("city", "City must be at least 2 characters.")
     .optional({ values: "falsy" })
     .trim()
@@ -74,16 +102,16 @@ exports.brewery_create_post = [
     const errors = validationResult(req);
 
     // Create a new brewery object
-    const brewery = new Brewery({
-      name: req.body.name,
-      city: req.body.city,
-      state: req.body.state,
-      country: req.body.country,
-      location: {
-        type: "Point",
-        coordinates: [req.body.latitude_deg, req.body.longitude_deg],
-      },
-    });
+    const brewery = breweryCreate(
+      "",
+      req.body.name,
+      req.body.description,
+      req.body.city,
+      req.body.state,
+      req.body.country,
+      req.body.latitude_deg,
+      req.body.longitude_deg
+    );
 
     // Check for errors before continuing
     if (!errors.isEmpty()) {
@@ -93,7 +121,7 @@ exports.brewery_create_post = [
         errors: errors.array(),
       });
     } else {
-      // Check if Brewery exists already before saving
+      // Make sure a matching brewery doesn't already exist.
       const existingBrewery = await Brewery.findOne({
         name: brewery.name,
       }).exec();
@@ -164,6 +192,79 @@ exports.brewery_update_get = asyncHandler(async (req, res, next) => {
 });
 
 // Handle Brewery update on POST
-exports.brewery_update_post = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Brewery update POST: ${req.params.id}`);
-});
+exports.brewery_update_post = [
+  // Validate and sanitize the request
+  body("name", "Name must be at least 2 characters.")
+    .trim()
+    .isLength({ min: 2 }),
+  body("description").optional({ values: "falsy" }).trim(),
+  body("city", "City must be at least 2 characters.")
+    .optional({ values: "falsy" })
+    .trim()
+    .isLength({ min: 2 }),
+  body("state", "State must be at least 2 characters.")
+    .optional({ values: "falsy" })
+    .trim()
+    .isLength({ min: 2 }),
+  body("country", "Country must be at least 4 characters.")
+    .optional({ values: "falsy" })
+    .trim()
+    .isLength({ min: 4 }),
+  body("longitude_deg", "Longitude must be a number between -180 and 180.")
+    .optional({ values: "falsy" })
+    .trim()
+    .isNumeric()
+    .toFloat()
+    .custom((val) => val >= -180 && val <= 180),
+  body("latitude_deg", "Latitude must be a number between -90 and 90.")
+    .optional({ values: "falsy" })
+    .trim()
+    .isNumeric()
+    .toFloat()
+    .custom((val) => val >= -90 && val <= 90),
+
+  // Process the request
+  asyncHandler(async (req, res, next) => {
+    // Extract any validation errors
+    const errors = validationResult(req);
+
+    // Create a new brewery object
+    const brewery = breweryCreate(
+      req.params.id,
+      req.body.name,
+      req.body.description,
+      req.body.city,
+      req.body.state,
+      req.body.country,
+      req.body.latitude_deg,
+      req.body.longitude_deg
+    );
+
+    // Check for errors before continuing
+    if (!errors.isEmpty()) {
+      // Errors detected. Send back to the form.
+      res.render("brewery_form", {
+        title: "Update Brewery: " + brewery.name,
+        brewery,
+        errors: errors.array(),
+      });
+    } else {
+      // Make sure a brewery of this new name doesn't already exist before updating
+      const existingBrewery = await Brewery.findOne({
+        name: brewery.name,
+        _id: { $ne: req.params.id },
+      }).exec();
+
+      if (existingBrewery) {
+        res.redirect(existingBrewery.url);
+      } else {
+        const updatedBrewery = await Brewery.findByIdAndUpdate(
+          req.params.id,
+          brewery,
+          {}
+        );
+        res.redirect(updatedBrewery.url);
+      }
+    }
+  }),
+];
