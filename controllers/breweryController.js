@@ -110,7 +110,24 @@ exports.brewery_create_post = [
 
 // Display Brewery delete form on GET
 exports.brewery_delete_get = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Brewery delete GET: ${req.params.id}`);
+  // Get the brewery and it's beers
+  const [brewery, breweryBeers] = await Promise.all([
+    Brewery.findById(req.params.id).exec(),
+    Beer.find({ brewery: req.params.id })
+      .collation({ locale: "en" })
+      .sort("name"),
+  ]);
+
+  if (brewery === null) {
+    // Brewery not found by ID. Redirect to brewery list.
+    res.redirect("/inventory/breweries");
+  }
+
+  res.render("brewery_delete", {
+    title: "Delete Brewery: " + brewery.name,
+    brewery,
+    brewery_beers: breweryBeers,
+  });
 });
 
 // Handle Brewery delete on POST
