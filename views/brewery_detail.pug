@@ -14,8 +14,11 @@ block content
   div.brewery-beers-container
     h2 Beers 
     hr
-    ul
-      each beer in brewery_beers
-        li
-            a(href=beer.url) #{beer.name}
-            | , #{beer.type.name}
+    if brewery_beers.length > 0
+      ul
+        each beer in brewery_beers
+          li
+              a(href=beer.url) #{beer.name}
+              | , #{beer.type.name}
+    else
+      p There are no beers from this brewery.
