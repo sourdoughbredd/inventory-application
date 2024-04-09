@@ -17,10 +17,16 @@ block content
       label(for="country") Country
       input(type="text" name="country" placeholder="USA, Belgium, etc." value=(brewery === undefined ? "" : brewery.country))
     div.form-group
-      label(for="longitude_deg") Longitude (in degrees)
-      input(type="text" name="longitude_deg" placeholder="40.374, -20.243, etc." value=(brewery === undefined ? "" : brewery.location.coordinates[0]))    
-    div.form-group
       label(for="latitude_deg") Latitude (in degrees)
-      input(type="text" name="latitude_deg" placeholder="22.995, -18.847, etc." value=(brewery === undefined ? "" : brewery.location.coordinates[1]))
-
+      input(type="text" name="latitude_deg" placeholder="22.995, -18.847, etc." value=(brewery === undefined ? "" : brewery.location.coordinates[0]))
+    div.form-group
+      label(for="longitude_deg") Longitude (in degrees)
+      input(type="text" name="longitude_deg" placeholder="40.374, -20.243, etc." value=(brewery === undefined ? "" : brewery.location.coordinates[1]))    
+    
     button(type="submit") Submit
+
+    if errors
+      h3 Please fix the following errors: 
+      ul
+        for error in errors 
+          li!= error.msg
