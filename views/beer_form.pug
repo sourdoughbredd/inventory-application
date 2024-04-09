@@ -1,0 +1,59 @@
+extends layout 
+
+block content
+  h1 #{title}
+
+  form(method="POST")
+    div.form-group
+      label(for="name") Name
+      input(type="text" name="name" required placeholder="West Coast Hazy, Little Red, Sour Monkey, etc." value=(beer === undefined ? "" : beer.name))
+    div.form-group
+      label(for='brewery') Brewery
+      select(name='brewery' required)
+        option(value='') --Please select a brewery--
+        for brewery in breweries
+          if beer
+            if brewery._id.toString()===beer.brewery._id.toString()
+              option(value=brewery._id selected) #{brewery.name}
+            else
+              option(value=brewery._id) #{brewery.name}
+          else
+            option(value=brewery._id) #{brewery.name}
+    div.form-group
+      label(for='type') Type
+      select(name='type' required)
+        option(value='') --Please select a beer type--
+        for beerType in types
+          if beer
+            if beerType._id.toString()===beer.type._id.toString()
+              option(value=beerType._id selected) #{beerType.name}
+            else
+              option(value=beerType._id) #{beerType.name}
+          else
+            option(value=beerType._id) #{beerType.name}
+    div.form-group
+      label(for="description") Description
+      input(type="text" name="description" placeholder="A bold and bitter brew boasting beautiful backend flavors." value=(beer === undefined ? "" : beer.description))
+    div.form-group
+      label(for="abv") ABV
+      input(type="number" name="abv" min=0 max=100 required placeholder=5.5 value=(beer === undefined ? "" : beer.abv))
+    div.form-group
+      label(for="abv") IBU
+      input(type="number" name="ibu" min=0 placeholder=40 value=(beer === undefined ? "" : beer.ibu))
+    div.form-group
+      label(for="flavors") Flavors (comma-separated)
+      input(type="text" name="flavors"
+            placeholder="bold, nutty, hoppy" 
+            value=(beer === undefined 
+                ? "" 
+                : beer.flavors.reduce((acc, curr, idx) => acc + curr + (idx < flavors.length - 1 ? "," : ""))
+              )
+            )
+    
+    button(type="submit") Submit
+
+  if errors
+    h3 Please fix the following errors: 
+    ul
+      for error in errors 
+        li!= error.msg

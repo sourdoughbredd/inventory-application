@@ -56,7 +56,15 @@ exports.beer_detail = asyncHandler(async (req, res, next) => {
 
 // Display beer create form on GET
 exports.beer_create_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Beer create GET");
+  const [breweries, types] = await Promise.all([
+    Brewery.find({}, "name")
+      .collation({ locale: "en" })
+      .sort({ name: 1 })
+      .exec(),
+    Type.find({}, "name").collation({ locale: "en" }).sort({ name: 1 }).exec(),
+  ]);
+
+  res.render("beer_form", { title: "Add New Beer", breweries, types });
 });
 
 // Handle beer create on POST
