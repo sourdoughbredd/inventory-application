@@ -3,33 +3,6 @@ const Beer = require("../models/beer");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
-// Helper to create breweries with optional args
-function breweryCreate(
-  _id,
-  name,
-  description,
-  city,
-  state,
-  country,
-  latitude_deg,
-  longitude_deg
-) {
-  const brewerydetail = { name };
-  if (_id) brewerydetail._id = _id;
-  if (description) brewerydetail.description = description;
-  if (city) brewerydetail.city = city;
-  if (state) brewerydetail.state = state;
-  if (country) brewerydetail.country = country;
-  if (latitude_deg && longitude_deg) {
-    brewerydetail.location = {
-      type: "Point",
-      coordinates: [Number(latitude_deg), Number(longitude_deg)],
-    };
-  }
-
-  return new Brewery(brewerydetail);
-}
-
 // Display list of all breweries
 exports.brewery_list = asyncHandler(async (req, res, next) => {
   const breweries = await Brewery.find({}, "name city state country")
@@ -102,16 +75,22 @@ exports.brewery_create_post = [
     const errors = validationResult(req);
 
     // Create a new brewery object
-    const brewery = breweryCreate(
-      "",
-      req.body.name,
-      req.body.description,
-      req.body.city,
-      req.body.state,
-      req.body.country,
-      req.body.latitude_deg,
-      req.body.longitude_deg
-    );
+    const location = {
+      type: "Point",
+      coordinates: [
+        Number(req.body.latitude_deg),
+        Number(req.body.longitude_deg),
+      ],
+    };
+    const brewery = new Brewery({
+      _id: req.params.id,
+      name: req.body.name,
+      description: req.body.description,
+      city: req.body.city,
+      state: req.body.state,
+      country: req.body.country,
+      location,
+    });
 
     // Check for errors before continuing
     if (!errors.isEmpty()) {
@@ -229,16 +208,22 @@ exports.brewery_update_post = [
     const errors = validationResult(req);
 
     // Create a new brewery object
-    const brewery = breweryCreate(
-      req.params.id,
-      req.body.name,
-      req.body.description,
-      req.body.city,
-      req.body.state,
-      req.body.country,
-      req.body.latitude_deg,
-      req.body.longitude_deg
-    );
+    const location = {
+      type: "Point",
+      coordinates: [
+        Number(req.body.latitude_deg),
+        Number(req.body.longitude_deg),
+      ],
+    };
+    const brewery = new Brewery({
+      _id: req.params.id,
+      name: req.body.name,
+      description: req.body.description,
+      city: req.body.city,
+      state: req.body.state,
+      country: req.body.country,
+      location,
+    });
 
     // Check for errors before continuing
     if (!errors.isEmpty()) {
