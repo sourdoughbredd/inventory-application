@@ -174,7 +174,23 @@ exports.beer_delete_get = asyncHandler(async (req, res, next) => {
 
 // Handle beer delete on POST
 exports.beer_delete_post = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Beer delete POST: ${req.params.id}`);
+  // Get the beer and it's SKUs
+  const [beer, beerSkus] = await Promise.all([
+    Beer.findById(req.body.beerid).exec(),
+    BeerSku.find({ beer: req.body.beerid }).exec(),
+  ]);
+
+  if (beerSkus.length > 0) {
+    // Cannot delete without deleting SKUs. Render the delete form.
+    res.render("beer_delete", {
+      title: "Delete Beer: " + beer.name,
+      beer,
+      beer_skus: beerSkus,
+    });
+  }
+
+  await Beer.findByIdAndDelete(req.body.beerid).exec();
+  res.redirect("/inventory/beers");
 });
 
 // Display beer update form on GET
