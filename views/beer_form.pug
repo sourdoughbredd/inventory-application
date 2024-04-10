@@ -46,7 +46,7 @@ block content
             placeholder="bold, nutty, hoppy" 
             value=(beer === undefined 
                 ? "" 
-                : beer.flavors.reduce((acc, curr, idx) => acc + curr + (idx < flavors.length - 1 ? "," : ""), "")
+                : beer.flavors.reduce((acc, curr, idx) => acc + curr + (idx < beer.flavors.length - 1 ? ", " : ""), "")
               )
             )
     
