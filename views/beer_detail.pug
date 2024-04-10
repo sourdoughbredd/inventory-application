@@ -21,9 +21,10 @@ block content
 
   div.skus-container
     h2 SKUs 
+  hr
 
+  if beer_skus.length > 0
     each sku in beer_skus 
-      hr
       p #[strong ID: ]
         a(href=sku.url) #{sku._id}
       p #[strong Packaging: ]
@@ -33,3 +34,5 @@ block content
         li Quantity: #{sku.packaging.quantity}
       p #[strong Price: ] $#{sku.price}
       p #[strong Stock Count: ] #{sku.stock}
+  else
+    p There are no SKUs for this beer.
