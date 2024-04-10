@@ -72,7 +72,9 @@ exports.beer_create_get = asyncHandler(async (req, res, next) => {
 // Handle beer create on POST
 exports.beer_create_post = [
   // Validate and sanitize
-  body("name").trim(),
+  body("name", "Name must be at least 1 character long.")
+    .trim()
+    .isLength({ min: 1 }),
   body("brewery", "Invalid brewery").trim().isMongoId(),
   body("type", "Invalid beer type").trim().isMongoId(),
   body("description", "Description must be at least 3 characters long.")
@@ -218,6 +220,88 @@ exports.beer_update_get = asyncHandler(async (req, res, next) => {
 });
 
 // Handle beer update on POST
-exports.beer_update_post = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Beer update POST: ${req.params.id}`);
-});
+exports.beer_update_post = [
+  // Validate and sanitize
+  body("name", "Name must be at least 1 character long.")
+    .trim()
+    .isLength({ min: 1 }),
+  body("brewery", "Invalid brewery").trim().isMongoId(),
+  body("type", "Invalid beer type").trim().isMongoId(),
+  body("description", "Description must be at least 3 characters long.")
+    .optional({ values: "falsy" })
+    .trim()
+    .isLength({ min: 3 }),
+  body("abv", "ABV must be a number between 0 and 100.")
+    .trim()
+    .isNumeric()
+    .toFloat()
+    .custom((val) => val >= 0 && val <= 100),
+  body("ibu", "IBU must be a number greater than or equal to 0.")
+    .optional({ values: "falsy" })
+    .trim()
+    .isNumeric()
+    .toFloat()
+    .custom((val) => val >= 0),
+  body("flavors").trim(),
+
+  // Process the request
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    // Create flavors array from comma-separated list
+    const flavors_array = req.body.flavors
+      ? req.body.flavors.split(",").map((elem) => elem.trim())
+      : [];
+
+    // Create the beer object
+    const beer = new Beer({
+      _id: req.params.id,
+      name: req.body.name,
+      brewery: req.body.brewery,
+      type: req.body.type,
+      description: req.body.description,
+      abv: req.body.abv,
+      ibu: req.body.ibu,
+      flavors: flavors_array,
+    });
+
+    // Check for validation errors
+    if (!errors.isEmpty()) {
+      // Errors found. Re-render beer form with errors display.
+      const [breweries, types] = await Promise.all([
+        Brewery.find({}, "name")
+          .collation({ locale: "en" })
+          .sort({ name: 1 })
+          .exec(),
+        Type.find({}, "name")
+          .collation({ locale: "en" })
+          .sort({ name: 1 })
+          .exec(),
+      ]);
+
+      res.render("beer_form", {
+        title: "Update Beer: " + beer.name,
+        beer,
+        breweries,
+        types,
+        errors: errors.array(),
+      });
+    }
+
+    // Check that a matching beer doesn't already exist before updating
+    const existingBeer = await Beer.findOne({
+      name: req.body.name,
+      brewery: req.body.brewery,
+      _id: { $ne: req.params.id },
+    }).exec();
+
+    if (existingBeer) {
+      // Redirect to existing beer's url
+      res.redirect(existingBeer.url);
+    } else {
+      // Create the beer
+      const updatedBeer = await Beer.findByIdAndUpdate(req.params.id, beer, {});
+      res.redirect(updatedBeer.url);
+    }
+  }),
+];
