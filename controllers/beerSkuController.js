@@ -32,7 +32,7 @@ exports.beersku_detail = asyncHandler(async (req, res, next) => {
 // Display beer SKU create form on GET
 exports.beersku_create_get = asyncHandler(async (req, res, next) => {
   // Get beers to populate list of possible beers to create SKU from
-  const beers = await Beer.find({})
+  const beers = await Beer.find({}, "name brewery")
     .collation({ locale: "en" })
     .sort({ name: 1 })
     .populate("brewery")
@@ -140,6 +140,7 @@ exports.beersku_delete_post = asyncHandler(async (req, res, next) => {
   // Get the beer SKU
   const beerSku = await BeerSku.findById(req.body.beerskuid).exec();
 
+  // Redirect if it wasn't found
   if (beerSku === null) {
     res.redirect("/inventory/beerskus");
   }
@@ -150,7 +151,27 @@ exports.beersku_delete_post = asyncHandler(async (req, res, next) => {
 
 // Display beer SKU update form on GET
 exports.beersku_update_get = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Beer SKU update GET: ${req.params.id}`);
+  // Get the beer SKU
+  const [beerSku, beers] = await Promise.all([
+    BeerSku.findById(req.params.id).exec(),
+    Beer.find({}, "name brewery")
+      .collation({ locale: "en" })
+      .sort({ name: 1 })
+      .populate("brewery")
+      .exec(),
+  ]);
+
+  // Redirect if it wasn't found
+  if (beerSku === null) {
+    res.redirect("/inventory/beerskus");
+  }
+
+  res.render("beersku_form", {
+    title: "Update Beer SKU: " + beerSku._id,
+    beers,
+    beersku: beerSku,
+    selected_beer: beerSku.beer,
+  });
 });
 
 // Handle beer SKU update on POST
