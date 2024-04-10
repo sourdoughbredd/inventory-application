@@ -12,3 +12,8 @@ block content
     li Quantity: #{beersku.packaging.quantity}
   p #[strong Price: ] $#{beersku.price}
   p #[strong Stock Count: ] #{beersku.stock}
+  hr
+  p
+    a(href=beersku.url + "/delete") Delete Beer SKU
+  p
+    a(href=beersku.url + "/update") Update Beer SKU
