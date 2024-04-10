@@ -1,4 +1,5 @@
 const BeerSku = require("../models/beerSku");
+const Beer = require("../models/beer");
 const asyncHandler = require("express-async-handler");
 
 // Display list of all beer SKUs
@@ -26,7 +27,14 @@ exports.beersku_detail = asyncHandler(async (req, res, next) => {
 
 // Display beer SKU create form on GET
 exports.beersku_create_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Beer SKU create GET");
+  // Get beers to populate list of possible beers to create SKU from
+  const beers = await Beer.find({})
+    .collation({ locale: "en" })
+    .sort({ name: 1 })
+    .populate("brewery")
+    .exec();
+
+  res.render("beersku_form", { title: "Create New Beer SKU", beers });
 });
 
 // Handle beer SKU create on POST
