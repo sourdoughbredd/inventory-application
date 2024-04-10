@@ -1,0 +1,11 @@
+extends layout 
+
+block content 
+  h1 #{title}
+  p #[strong Are you sure you want to delete this beer SKU?]
+  p #[strong ID]: #{beersku._id}
+  p #[strong Packaging]: #{beersku.packaging.quantity}ct, #{beersku.packaging.volume_oz}oz (#{beersku.packaging.volume_ml}ml), #{beersku.packaging.type}
+  form(method="POST")
+      div.form-group
+        input(type="hidden" name="beerskuid" value=beersku._id)
+      button(type="submit") Delete
