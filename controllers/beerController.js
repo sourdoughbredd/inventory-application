@@ -195,7 +195,26 @@ exports.beer_delete_post = asyncHandler(async (req, res, next) => {
 
 // Display beer update form on GET
 exports.beer_update_get = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Beer update GET: ${req.params.id}`);
+  const [beer, breweries, types] = await Promise.all([
+    Beer.findById(req.params.id).exec(),
+    Brewery.find({}, "name")
+      .collation({ locale: "en" })
+      .sort({ name: 1 })
+      .exec(),
+    Type.find({}, "name").collation({ locale: "en" }).sort({ name: 1 }).exec(),
+  ]);
+
+  if (beer === null) {
+    // Beer not found by ID. Redirect to beer list
+    res.redirect("/inventory/beers");
+  }
+
+  res.render("beer_form", {
+    title: "Update Beer: " + beer.name,
+    beer,
+    breweries,
+    types,
+  });
 });
 
 // Handle beer update on POST
