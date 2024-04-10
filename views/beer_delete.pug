@@ -1,0 +1,21 @@
+extends layout 
+
+block content
+  h1 #{title}
+  if beer_skus.length
+    p #[strong You must delete all SKUs of this beer before you can delete this beer.]
+    h3 Beer SKUs:
+    ul 
+      each sku in beer_skus
+        li
+          a(href=sku.url) #{sku._id}
+          | &nbsp;#{sku.packaging.quantity}ct,
+          | &nbsp;#{sku.packaging.volume_oz}oz (#{sku.packaging.volume_ml}ml),
+          | &nbsp;#{sku.packaging.type}
+  else 
+    p #[strong Are you sure you want to delete this beer?]
+    p #[strong ID]: #{beer._id}
+    form(method="POST")
+      div.form-group
+        input(type="hidden" name="beerid" value=beer._id)
+      button(type="submit") Delete
