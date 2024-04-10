@@ -137,7 +137,15 @@ exports.beersku_delete_get = asyncHandler(async (req, res, next) => {
 
 // Handle beer SKU delete on POST
 exports.beersku_delete_post = asyncHandler(async (req, res, next) => {
-  res.send(`NOT IMPLEMENTED: Beer SKU delete POST: ${req.params.id}`);
+  // Get the beer SKU
+  const beerSku = await BeerSku.findById(req.body.beerskuid).exec();
+
+  if (beerSku === null) {
+    res.redirect("/inventory/beerskus");
+  }
+
+  await BeerSku.findByIdAndDelete(req.body.beerskuid);
+  res.redirect("/inventory/beerskus");
 });
 
 // Display beer SKU update form on GET
