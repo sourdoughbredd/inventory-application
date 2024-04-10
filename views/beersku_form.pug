@@ -15,21 +15,21 @@ block content
             option(value=beer._id) #{beer.name} - #{beer.brewery.name}
     h3 Packaging
     div.form-group
-      label(for="packaging_type") Type
-      input(type="text" name="packaging_type" required placeholder="Can, Bottle, Keg, etc." value=(beer === undefined || beer.packaging === undefined ? "" : beer.packaging.type))
+      label(for="packaging_type") Packaging Type
+      input(type="text" name="packaging_type" required placeholder="Can, Bottle, Keg, etc." value=(beersku === undefined || beersku.packaging === undefined ? "" : beersku.packaging.type))
     div.form-group
       label(for="packaging_volume_oz") Volume (oz)
-      input(type="number" name="packaging_volume_oz" min=0.1 step=0.1 required placeholder="12" value=(beer === undefined || beer.packaging === undefined ? "" : beer.packaging.volume_oz))
+      input(type="number" name="packaging_volume_oz" min=0.1 step=0.1 required placeholder="12" value=(beersku === undefined || beersku.packaging === undefined ? "" : beersku.packaging.volume_oz))
     div.form-group
       label(for="packaging_quantity") Quantity in Packaging
-      input(type="number" name="packaging_quantity" min=1 step=1 required placeholder=30 value=(beer === undefined || beer.packaging === undefined ? "" : beer.packaging.quantity))
+      input(type="number" name="packaging_quantity" min=1 step=1 required placeholder=30 value=(beersku === undefined || beersku.packaging === undefined ? "" : beersku.packaging.quantity))
     h3 Price and Stock
     div.form-group
       label(for="price") Price
-      input(type="number" name="price" min=0 step=0.01 required placeholder=19.99 value=(beer === undefined ? "" : beer.price))
+      input(type="number" name="price" min=0 step=0.01 required placeholder=19.99 value=(beersku === undefined ? "" : beersku.price))
     div.form-group
       label(for="stock") Stock Count
-      input(type="number" name="stock" min=0 step=1 required placeholder=20 value=(beer === undefined ? "" : beer.stock))
+      input(type="number" name="stock" min=0 step=1 required placeholder=20 value=(beersku === undefined ? "" : beersku.stock))
 
     
     button(type="submit") Submit
