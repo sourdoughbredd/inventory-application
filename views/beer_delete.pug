@@ -9,7 +9,7 @@ block content
       each sku in beer_skus
         li
           a(href=sku.url) #{sku._id}
-          | &nbsp;#{sku.packaging.quantity}ct,
+          | &nbsp;- #{sku.packaging.quantity}ct,
           | &nbsp;#{sku.packaging.volume_oz}oz (#{sku.packaging.volume_ml}ml),
           | &nbsp;#{sku.packaging.type}
   else 
