@@ -36,10 +36,10 @@ block content
       input(type="text" name="description" placeholder="A bold and bitter brew boasting beautiful backend flavors." value=(beer === undefined ? "" : beer.description))
     div.form-group
       label(for="abv") ABV
-      input(type="number" name="abv" min=0 max=100 required placeholder=5.5 value=(beer === undefined ? "" : beer.abv))
+      input(type="number" name="abv" min=0 max=100 step=0.1 required placeholder=5.5 value=(beer === undefined ? "" : beer.abv))
     div.form-group
-      label(for="abv") IBU
-      input(type="number" name="ibu" min=0 placeholder=40 value=(beer === undefined ? "" : beer.ibu))
+      label(for="ibu") IBU
+      input(type="number" name="ibu" min=0 step=1 placeholder=40 value=(beer === undefined ? "" : beer.ibu))
     div.form-group
       label(for="flavors") Flavors (comma-separated)
       input(type="text" name="flavors"
