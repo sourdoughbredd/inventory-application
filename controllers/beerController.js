@@ -135,7 +135,10 @@ exports.beer_create_post = [
         crud_op: "create",
         errors: errors.array(),
       });
-    } else if (req.body.password !== process.env.ADMIN_PASS) {
+      return;
+    }
+
+    if (req.body.password !== process.env.ADMIN_PASS) {
       // Incorrect password slipped through validation. Re-render beer form.
       const [breweries, types] = await Promise.all([
         Brewery.find({}, "name")
@@ -166,11 +169,12 @@ exports.beer_create_post = [
     if (existingBeer) {
       // Redirect to existing beer's url
       res.redirect(existingBeer.url);
-    } else {
-      // Create the beer
-      await beer.save();
-      res.redirect(beer.url);
+      return;
     }
+
+    // Create the beer
+    await beer.save();
+    res.redirect(beer.url);
   }),
 ];
 
@@ -194,37 +198,37 @@ exports.beer_delete_get = asyncHandler(async (req, res, next) => {
 });
 
 // Handle beer delete on POST
-exports.beer_delete_post = [
-  body("password").trim(),
-  asyncHandler(async (req, res, next) => {
-    // Get the beer and it's SKUs
-    const [beer, beerSkus] = await Promise.all([
-      Beer.findById(req.body.beerid).exec(),
-      BeerSku.find({ beer: req.body.beerid }).exec(),
-    ]);
+exports.beer_delete_post = asyncHandler(async (req, res, next) => {
+  // Get the beer and it's SKUs
+  const [beer, beerSkus] = await Promise.all([
+    Beer.findById(req.body.beerid).exec(),
+    BeerSku.find({ beer: req.body.beerid }).exec(),
+  ]);
 
-    if (beerSkus.length > 0) {
-      // Cannot delete without deleting SKUs. Render the delete form.
-      res.render("beer_delete", {
-        beer,
-        beer_skus: beerSkus,
-      });
-    }
+  if (beerSkus.length > 0) {
+    // Cannot delete without deleting SKUs. Render the delete form.
+    res.render("beer_delete", {
+      beer,
+      beer_skus: beerSkus,
+    });
+    return;
+  }
 
-    // Check password before deleting
-    if (req.body.password !== process.env.ADMIN_PASS) {
-      // Wrong password! Re-render and warn user
-      res.render("beer_delete", {
-        beer,
-        beer_skus: beerSkus,
-        incorrect_password: true,
-      });
-    } else {
-      await Beer.findByIdAndDelete(req.body.beerid).exec();
-      res.redirect("/inventory/beers");
-    }
-  }),
-];
+  // Check password
+  if (req.body.password.trim() !== process.env.ADMIN_PASS) {
+    // Wrong password! Re-render and warn user
+    res.render("beer_delete", {
+      beer,
+      beer_skus: beerSkus,
+      incorrect_password: true,
+    });
+    return;
+  }
+
+  // Delete the beer
+  await Beer.findByIdAndDelete(req.body.beerid).exec();
+  res.redirect("/inventory/beers");
+});
 
 // Display beer update form on GET
 exports.beer_update_get = asyncHandler(async (req, res, next) => {
@@ -319,7 +323,10 @@ exports.beer_update_post = [
         types,
         errors: errors.array(),
       });
-    } else if (req.body.password !== process.env.ADMIN_PASS) {
+      return;
+    }
+
+    if (req.body.password !== process.env.ADMIN_PASS) {
       // Incorrect password slipped through validation. Re-render beer form.
       const [breweries, types] = await Promise.all([
         Brewery.find({}, "name")
@@ -351,10 +358,11 @@ exports.beer_update_post = [
     if (existingBeer) {
       // Redirect to existing beer's url
       res.redirect(existingBeer.url);
-    } else {
-      // Create the beer
-      const updatedBeer = await Beer.findByIdAndUpdate(req.params.id, beer, {});
-      res.redirect(updatedBeer.url);
+      return;
     }
+
+    // Update the beer
+    const updatedBeer = await Beer.findByIdAndUpdate(req.params.id, beer, {});
+    res.redirect(updatedBeer.url);
   }),
 ];
