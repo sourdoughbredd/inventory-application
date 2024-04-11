@@ -65,6 +65,9 @@ exports.beersku_create_post = [
     .trim()
     .isInt({ min: 0 })
     .toInt(),
+  body("password", "Incorrect password. Please try again.")
+    .trim()
+    .custom((pwd) => pwd === process.env.ADMIN_PASS),
 
   // Process request
   asyncHandler(async (req, res, next) => {
@@ -100,6 +103,24 @@ exports.beersku_create_post = [
         selected_beer: beerSku.beer._id,
         errors: errors.array(),
       });
+      return;
+    }
+
+    if (req.body.password !== process.env.ADMIN_PASS) {
+      // Incorrect password slipped throuhg validation. Re-render form.
+      const beers = await Beer.find({})
+        .collation({ locale: "en" })
+        .sort({ name: 1 })
+        .populate("brewery")
+        .exec();
+
+      res.render("beersku_form", {
+        crud_op: "create",
+        beers,
+        beersku: beerSku,
+        selected_beer: beerSku.beer._id,
+      });
+      return;
     }
 
     // Make sure beer SKU doesn't already exist
@@ -135,11 +156,23 @@ exports.beersku_delete_get = asyncHandler(async (req, res, next) => {
 // Handle beer SKU delete on POST
 exports.beersku_delete_post = asyncHandler(async (req, res, next) => {
   // Get the beer SKU
-  const beerSku = await BeerSku.findById(req.body.beerskuid).exec();
+  const beerSku = await BeerSku.findById(req.body.beerskuid)
+    .populate("beer")
+    .exec();
 
-  // Redirect if it wasn't found
   if (beerSku === null) {
+    // Beer SKU not found by ID. Show SKU list.
     res.redirect("/inventory/beerskus");
+    return;
+  }
+
+  if (req.body.password.trim() !== process.env.ADMIN_PASS) {
+    // Wrong password. Tell user
+    res.render("beersku_delete", {
+      beersku: beerSku,
+      incorrect_password: true,
+    });
+    return;
   }
 
   await BeerSku.findByIdAndDelete(req.body.beerskuid);
@@ -197,6 +230,9 @@ exports.beersku_update_post = [
     .trim()
     .isInt({ min: 0 })
     .toInt(),
+  body("password", "Incorrect password. Please try again.")
+    .trim()
+    .custom((pwd) => pwd === process.env.ADMIN_PASS),
 
   // Process request
   asyncHandler(async (req, res, next) => {
@@ -233,6 +269,24 @@ exports.beersku_update_post = [
         selected_beer: beerSku.beer,
         errors: errors.array(),
       });
+      return;
+    }
+
+    if (req.body.password !== process.env.ADMIN_PASS) {
+      // Incorrect password slipped through validation. Re-render form.
+      const beers = await Beer.find({})
+        .collation({ locale: "en" })
+        .sort({ name: 1 })
+        .populate("brewery")
+        .exec();
+
+      res.render("beersku_form", {
+        crud_op: "update",
+        beers,
+        beersku: beerSku,
+        selected_beer: beerSku.beer,
+      });
+      return;
     }
 
     // Make sure beer SKU doesn't already exist
@@ -244,9 +298,11 @@ exports.beersku_update_post = [
 
     if (existingBeerSku) {
       res.redirect(existingBeerSku.url);
-    } else {
-      await BeerSku.findByIdAndUpdate(req.params.id, beerSku, {}).exec();
-      res.redirect(beerSku.url);
+      return;
     }
+
+    // Update
+    await BeerSku.findByIdAndUpdate(req.params.id, beerSku, {}).exec();
+    res.redirect(beerSku.url);
   }),
 ];
