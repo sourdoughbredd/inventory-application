@@ -66,7 +66,7 @@ exports.beer_create_get = asyncHandler(async (req, res, next) => {
     Type.find({}, "name").collation({ locale: "en" }).sort({ name: 1 }).exec(),
   ]);
 
-  res.render("beer_form", { title: "Add New Beer", breweries, types });
+  res.render("beer_form", { breweries, types, crud_op: "create" });
 });
 
 // Handle beer create on POST
@@ -93,6 +93,9 @@ exports.beer_create_post = [
     .toFloat()
     .custom((val) => val >= 0),
   body("flavors").trim(),
+  body("password", "Incorrect admin password. Please try again.")
+    .trim()
+    .custom((pwd) => pwd === process.env.ADMIN_PASS),
 
   // Process the request
   asyncHandler(async (req, res, next) => {
@@ -129,12 +132,32 @@ exports.beer_create_post = [
       ]);
 
       res.render("beer_form", {
-        title: "Add New Beer",
         beer,
         breweries,
         types,
+        crud_op: "create",
         errors: errors.array(),
       });
+    } else if (req.body.password !== process.env.ADMIN_PASS) {
+      // Incorrect password slipped through validation. Re-render beer form.
+      const [breweries, types] = await Promise.all([
+        Brewery.find({}, "name")
+          .collation({ locale: "en" })
+          .sort({ name: 1 })
+          .exec(),
+        Type.find({}, "name")
+          .collation({ locale: "en" })
+          .sort({ name: 1 })
+          .exec(),
+      ]);
+
+      res.render("beer_form", {
+        beer,
+        breweries,
+        types,
+        crud_op: "create",
+      });
+      return;
     }
 
     // Check that a matching beer doesn't already exist before creating
@@ -168,32 +191,45 @@ exports.beer_delete_get = asyncHandler(async (req, res, next) => {
   }
 
   res.render("beer_delete", {
-    title: "Delete Beer: " + beer.name,
     beer,
     beer_skus: beerSkus,
   });
 });
 
 // Handle beer delete on POST
-exports.beer_delete_post = asyncHandler(async (req, res, next) => {
-  // Get the beer and it's SKUs
-  const [beer, beerSkus] = await Promise.all([
-    Beer.findById(req.body.beerid).exec(),
-    BeerSku.find({ beer: req.body.beerid }).exec(),
-  ]);
+exports.beer_delete_post = [
+  body("password").trim(),
+  asyncHandler(async (req, res, next) => {
+    // Get the beer and it's SKUs
+    const [beer, beerSkus] = await Promise.all([
+      Beer.findById(req.body.beerid).exec(),
+      BeerSku.find({ beer: req.body.beerid }).exec(),
+    ]);
 
-  if (beerSkus.length > 0) {
-    // Cannot delete without deleting SKUs. Render the delete form.
-    res.render("beer_delete", {
-      title: "Delete Beer: " + beer.name,
-      beer,
-      beer_skus: beerSkus,
-    });
-  }
+    if (beerSkus.length > 0) {
+      // Cannot delete without deleting SKUs. Render the delete form.
+      res.render("beer_delete", {
+        title: "Delete Beer: " + beer.name,
+        beer,
+        beer_skus: beerSkus,
+      });
+    }
 
-  await Beer.findByIdAndDelete(req.body.beerid).exec();
-  res.redirect("/inventory/beers");
-});
+    // Check password before deleting
+    if (req.body.password !== process.env.ADMIN_PASS) {
+      // Wrong password! Re-render and warn user
+      res.render("beer_delete", {
+        title: "Delete Beer: " + beer.name,
+        beer,
+        beer_skus: beerSkus,
+        incorrect_password: true,
+      });
+    } else {
+      await Beer.findByIdAndDelete(req.body.beerid).exec();
+      res.redirect("/inventory/beers");
+    }
+  }),
+];
 
 // Display beer update form on GET
 exports.beer_update_get = asyncHandler(async (req, res, next) => {
@@ -212,10 +248,10 @@ exports.beer_update_get = asyncHandler(async (req, res, next) => {
   }
 
   res.render("beer_form", {
-    title: "Update Beer: " + beer.name,
     beer,
     breweries,
     types,
+    crud_op: "update",
   });
 });
 
@@ -243,6 +279,9 @@ exports.beer_update_post = [
     .toFloat()
     .custom((val) => val >= 0),
   body("flavors").trim(),
+  body("password", "Incorrect admin password. Please try again.")
+    .trim()
+    .custom((pwd) => pwd === process.env.ADMIN_PASS),
 
   // Process the request
   asyncHandler(async (req, res, next) => {
@@ -280,12 +319,31 @@ exports.beer_update_post = [
       ]);
 
       res.render("beer_form", {
-        title: "Update Beer: " + beer.name,
         beer,
         breweries,
         types,
         errors: errors.array(),
       });
+    } else if (req.body.password !== process.env.ADMIN_PASS) {
+      // Incorrect password slipped through validation. Re-render beer form.
+      const [breweries, types] = await Promise.all([
+        Brewery.find({}, "name")
+          .collation({ locale: "en" })
+          .sort({ name: 1 })
+          .exec(),
+        Type.find({}, "name")
+          .collation({ locale: "en" })
+          .sort({ name: 1 })
+          .exec(),
+      ]);
+
+      res.render("beer_form", {
+        beer,
+        breweries,
+        types,
+        crud_op: "update",
+      });
+      return;
     }
 
     // Check that a matching beer doesn't already exist before updating
