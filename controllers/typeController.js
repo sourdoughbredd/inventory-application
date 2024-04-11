@@ -44,6 +44,9 @@ exports.type_create_post = [
     .trim()
     .isLength({ min: 2 })
     .escape(),
+  body("password", "Incorrect password. Please try again.")
+    .trim()
+    .custom((pwd) => pwd === process.env.ADMIN_PASS),
 
   // Process the request
   asyncHandler(async (req, res, next) => {
@@ -61,20 +64,32 @@ exports.type_create_post = [
         type: type,
         errors: errors.array(),
       });
-    } else {
-      // No errors. Save to database unless it already exists.
-      const typeExists = await Type.findOne({ name: req.body.name })
-        .collation({ locale: "en", strength: 2 })
-        .exec();
-      if (typeExists) {
-        // Already exists. Redirect to detail page.
-        res.redirect(typeExists.url);
-      } else {
-        // Brand new type. Create and redirect to detail page
-        await type.save();
-        res.redirect(type.url);
-      }
+      return;
     }
+
+    // Make sure invalid password didn't slip through validation
+    if (req.body.password !== process.env.ADMIN_PASS) {
+      res.render("type_form", {
+        crud_op: "create",
+        type: type,
+      });
+      return;
+    }
+
+    // No errors. Save to database unless it already exists.
+    const typeExists = await Type.findOne({ name: req.body.name })
+      .collation({ locale: "en", strength: 2 })
+      .exec();
+
+    if (typeExists) {
+      // Already exists. Redirect to detail page.
+      res.redirect(typeExists.url);
+      return;
+    }
+
+    // Create new type
+    await type.save();
+    res.redirect(type.url);
   }),
 ];
 
@@ -104,17 +119,29 @@ exports.type_delete_post = asyncHandler(async (req, res, next) => {
     Beer.find({ type: req.body.typeid }).populate("brewery").exec(),
   ]);
 
+  // Check that there are no beers of this type
   if (beersOfType.length > 0) {
     // Beers of this type found. Render the delete page.
     res.render("type_delete", {
       type: type,
       beers_of_type: beersOfType,
     });
-  } else {
-    // No beers of this type. Free to delete
-    await Type.findByIdAndDelete(req.body.typeid);
-    res.redirect("/inventory/types");
+    return;
   }
+
+  // Check password
+  if (req.body.password.trim() !== process.env.ADMIN_PASS) {
+    res.render("type_delete", {
+      type: type,
+      beers_of_type: beersOfType,
+      incorrect_password: true,
+    });
+    return;
+  }
+
+  // Delete the type
+  await Type.findByIdAndDelete(req.body.typeid);
+  res.redirect("/inventory/types");
 });
 
 // Display Type update form on GET
@@ -139,6 +166,9 @@ exports.type_update_post = [
     .trim()
     .isLength({ min: 2 })
     .escape(),
+  body("password", "Incorrect password. Please try again.")
+    .trim()
+    .custom((pwd) => pwd === process.env.ADMIN_PASS),
 
   // Process request
   asyncHandler(async (req, res, next) => {
@@ -151,7 +181,7 @@ exports.type_update_post = [
       name: req.body.name,
     });
 
-    // Process
+    // Check for errors
     if (!errors.isEmpty()) {
       // Validation errors detected. Send error data back to form.
       res.render("type_form", {
@@ -159,23 +189,31 @@ exports.type_update_post = [
         type: type,
         errors: errors.array(),
       });
-    } else {
-      // No errors. Save to database unless it already exists.
-      const typeExists = await Type.findOne({ name: req.body.name })
-        .collation({ locale: "en", strength: 2 })
-        .exec();
-      if (typeExists) {
-        // Already exists. Redirect to detail page.
-        res.redirect(typeExists.url);
-      } else {
-        // Type does not exist. Update and redirect to detail page
-        const updatedType = await Type.findByIdAndUpdate(
-          req.params.id,
-          type,
-          {}
-        );
-        res.redirect(updatedType.url);
-      }
+      return;
     }
+
+    // Check that incorrect password didn't slip through validation
+    if (req.body.password !== process.env.ADMIN_PASS) {
+      res.render("type_form", {
+        crud_op: "update",
+        type: type,
+      });
+      return;
+    }
+
+    // Check if this type already exists elsewhere
+    const typeExists = await Type.findOne({ name: req.body.name })
+      .collation({ locale: "en", strength: 2 })
+      .exec();
+
+    if (typeExists) {
+      // Already exists. Redirect to detail page.
+      res.redirect(typeExists.url);
+      return;
+    }
+
+    // Update type
+    const updatedType = await Type.findByIdAndUpdate(req.params.id, type, {});
+    res.redirect(updatedType.url);
   }),
 ];
