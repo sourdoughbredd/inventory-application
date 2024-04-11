@@ -2,7 +2,6 @@ const Beer = require("../models/beer");
 const BeerSku = require("../models/beerSku");
 const Brewery = require("../models/brewery");
 const Type = require("../models/type");
-const mongoose = require("mongoose");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
@@ -19,7 +18,6 @@ exports.index = asyncHandler(async (req, res, next) => {
     ]);
 
   res.render("index", {
-    title: "Beer Inventory Home",
     beer_count: numBeers,
     beersku_count: numBeerSkus,
     beersku_in_stock_count: numBeerSkusInStock,
@@ -37,7 +35,6 @@ exports.beer_list = asyncHandler(async (req, res, next) => {
     .exec();
 
   res.render("beer_list", {
-    title: "Beer List",
     beer_list: beers,
   });
 });
@@ -209,7 +206,6 @@ exports.beer_delete_post = [
     if (beerSkus.length > 0) {
       // Cannot delete without deleting SKUs. Render the delete form.
       res.render("beer_delete", {
-        title: "Delete Beer: " + beer.name,
         beer,
         beer_skus: beerSkus,
       });
@@ -219,7 +215,6 @@ exports.beer_delete_post = [
     if (req.body.password !== process.env.ADMIN_PASS) {
       // Wrong password! Re-render and warn user
       res.render("beer_delete", {
-        title: "Delete Beer: " + beer.name,
         beer,
         beer_skus: beerSkus,
         incorrect_password: true,

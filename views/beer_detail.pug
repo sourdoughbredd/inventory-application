@@ -1,8 +1,9 @@
 extends layout
 
 block content 
-  h1 Beer Detail: #{beer.name}
+  h1 Beer Detail: #{beer._id}
 
+  p #[strong Name: ] #{beer.name}
   p #[strong Brewery: ]
     a(href=beer.brewery.url) #{beer.brewery.name}
   p #[strong Type: ]
