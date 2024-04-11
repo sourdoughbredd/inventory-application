@@ -20,3 +20,11 @@ body {
 .dynamic-content {
   flex-grow: 1;
 }
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 300px;
+  margin-bottom: 10px;
+}
