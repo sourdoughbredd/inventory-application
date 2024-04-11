@@ -67,6 +67,9 @@ exports.brewery_create_post = [
     .isNumeric()
     .toFloat()
     .custom((val) => val >= -90 && val <= 90),
+  body("password", "Incorrect password. Please try again.")
+    .trim()
+    .custom((pwd) => pwd === process.env.ADMIN_PASS),
 
   // Process the request
   asyncHandler(async (req, res, next) => {
@@ -98,19 +101,31 @@ exports.brewery_create_post = [
         brewery: brewery,
         errors: errors.array(),
       });
-    } else {
-      // Make sure a matching brewery doesn't already exist.
-      const existingBrewery = await Brewery.findOne({
-        name: brewery.name,
-      }).exec();
-
-      if (existingBrewery) {
-        res.redirect(existingBrewery.url);
-      } else {
-        await brewery.save();
-        res.redirect(brewery.url);
-      }
+      return;
     }
+
+    // Check if invalid password slipped through validation
+    if (req.body.password !== process.env.ADMIN_PASS) {
+      res.render("brewery_form", {
+        crud_op: "create",
+        brewery: brewery,
+      });
+      return;
+    }
+
+    // Make sure a matching brewery doesn't already exist.
+    const existingBrewery = await Brewery.findOne({
+      name: brewery.name,
+    }).exec();
+
+    if (existingBrewery) {
+      res.redirect(existingBrewery.url);
+      return;
+    }
+
+    // Save the new brewery
+    await brewery.save();
+    res.redirect(brewery.url);
   }),
 ];
 
@@ -141,13 +156,27 @@ exports.brewery_delete_post = asyncHandler(async (req, res, next) => {
     Beer.find({ brewery: req.body.breweryid }).exec(),
   ]);
 
+  // Check that brewery doesn't have beers
   if (breweryBeers.length > 0) {
     // Beers still existing for this brewery. Show delete form
     res.render("brewery_delete", {
       brewery,
       brewery_beers: breweryBeers,
     });
+    return;
   }
+
+  // Check password
+  if (req.body.password.trim() !== process.env.ADMIN_PASS) {
+    res.render("brewery_delete", {
+      brewery,
+      brewery_beers: breweryBeers,
+      incorrect_password: true,
+    });
+    return;
+  }
+
+  // Delete the brewery
   await Brewery.findByIdAndDelete(req.body.breweryid);
   res.redirect("/inventory/breweries");
 });
@@ -198,6 +227,9 @@ exports.brewery_update_post = [
     .isNumeric()
     .toFloat()
     .custom((val) => val >= -90 && val <= 90),
+  body("password", "Incorrect password. Please try again.")
+    .trim()
+    .custom((pwd) => pwd === process.env.ADMIN_PASS),
 
   // Process the request
   asyncHandler(async (req, res, next) => {
@@ -222,6 +254,8 @@ exports.brewery_update_post = [
       location,
     });
 
+    console.log(errors.array());
+
     // Check for errors before continuing
     if (!errors.isEmpty()) {
       // Errors detected. Send back to the form.
@@ -230,23 +264,35 @@ exports.brewery_update_post = [
         brewery,
         errors: errors.array(),
       });
-    } else {
-      // Make sure a brewery of this new name doesn't already exist before updating
-      const existingBrewery = await Brewery.findOne({
-        name: brewery.name,
-        _id: { $ne: req.params.id },
-      }).exec();
-
-      if (existingBrewery) {
-        res.redirect(existingBrewery.url);
-      } else {
-        const updatedBrewery = await Brewery.findByIdAndUpdate(
-          req.params.id,
-          brewery,
-          {}
-        );
-        res.redirect(updatedBrewery.url);
-      }
+      return;
     }
+
+    // Make sure incorrect password didn't slip through validation
+    if (req.body.password !== process.env.ADMIN_PASS) {
+      res.render("brewery_form", {
+        crud_op: "update",
+        brewery,
+      });
+      return;
+    }
+
+    // Make sure a brewery of this new name doesn't already exist before updating
+    const existingBrewery = await Brewery.findOne({
+      name: brewery.name,
+      _id: { $ne: req.params.id },
+    }).exec();
+
+    if (existingBrewery) {
+      res.redirect(existingBrewery.url);
+      return;
+    }
+
+    // Update the brewery
+    const updatedBrewery = await Brewery.findByIdAndUpdate(
+      req.params.id,
+      brewery,
+      {}
+    );
+    res.redirect(updatedBrewery.url);
   }),
 ];

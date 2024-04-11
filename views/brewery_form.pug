@@ -26,6 +26,9 @@ block content
       label(for="longitude_deg") Longitude (in degrees)
       input(type="text" name="longitude_deg" placeholder="40.374, -20.243, etc." value=(brewery === undefined || brewery.location === undefined ? "" : brewery.location.coordinates[1]))    
     
+    div.form-group
+      label(for="password") Admin Password
+      input(type="password" name="password" required)
     button(type="submit") Submit
 
   if errors
