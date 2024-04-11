@@ -1,7 +1,7 @@
 extends layout 
 
 block content
-  h1 #{title}
+  h1 #{crud_op === "create" ? "Create New Beer SKU" : "Update Beer SKU: " + beersku._id }
 
   form(method="POST")
     div.form-group

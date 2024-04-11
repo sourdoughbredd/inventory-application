@@ -11,7 +11,6 @@ exports.brewery_list = asyncHandler(async (req, res, next) => {
     .exec();
 
   res.render("brewery_list", {
-    title: "Brewery List",
     brewery_list: breweries,
   });
 });
@@ -34,7 +33,7 @@ exports.brewery_detail = asyncHandler(async (req, res, next) => {
 
 // Display Brewery create form on GET
 exports.brewery_create_get = asyncHandler(async (req, res, next) => {
-  res.render("brewery_form", { title: "Add New Brewery" });
+  res.render("brewery_form", { crud_op: "create" });
 });
 
 // Handle Brewery create on POST
@@ -95,7 +94,7 @@ exports.brewery_create_post = [
     // Check for errors before continuing
     if (!errors.isEmpty()) {
       res.render("brewery_form", {
-        title: "Add New Brewery",
+        crud_op: "create",
         brewery: brewery,
         errors: errors.array(),
       });
@@ -129,7 +128,6 @@ exports.brewery_delete_get = asyncHandler(async (req, res, next) => {
   }
 
   res.render("brewery_delete", {
-    title: "Delete Brewery: " + brewery.name,
     brewery,
     brewery_beers: breweryBeers,
   });
@@ -146,7 +144,6 @@ exports.brewery_delete_post = asyncHandler(async (req, res, next) => {
   if (breweryBeers.length > 0) {
     // Beers still existing for this brewery. Show delete form
     res.render("brewery_delete", {
-      title: "Delete Brewery: " + brewery.name,
       brewery,
       brewery_beers: breweryBeers,
     });
@@ -165,7 +162,7 @@ exports.brewery_update_get = asyncHandler(async (req, res, next) => {
   }
 
   res.render("brewery_form", {
-    title: "Update Brewery: " + brewery.name,
+    crud_op: "update",
     brewery,
   });
 });
@@ -229,7 +226,7 @@ exports.brewery_update_post = [
     if (!errors.isEmpty()) {
       // Errors detected. Send back to the form.
       res.render("brewery_form", {
-        title: "Update Brewery: " + brewery.name,
+        crud_op: "update",
         brewery,
         errors: errors.array(),
       });

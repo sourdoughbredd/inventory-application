@@ -2,7 +2,6 @@ extends layout
 
 block content 
   h1 Beer SKU Detail: #{beersku._id}
-  p #[strong ID: ] #{beersku._id}
   p #[strong Beer: ] 
     a(href=beersku.beer.url) #{beersku.beer.name}
   p #[strong Packaging: ]

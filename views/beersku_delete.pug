@@ -1,9 +1,9 @@
 extends layout 
 
 block content 
-  h1 #{title}
+  h1 Delete Beer SKU: #{beersku._id}
   p #[strong Are you sure you want to delete this beer SKU?]
-  p #[strong ID]: #{beersku._id}
+  p #[strong Beer]: #{beersku.beer.name}
   p #[strong Packaging]: #{beersku.packaging.quantity}ct, #{beersku.packaging.volume_oz}oz (#{beersku.packaging.volume_ml}ml), #{beersku.packaging.type}
   form(method="POST")
       div.form-group

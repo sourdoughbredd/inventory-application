@@ -2,7 +2,6 @@ const BeerSku = require("../models/beerSku");
 const Beer = require("../models/beer");
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
-const beer = require("../models/beer");
 
 const OZ_TO_ML = 29.5735;
 
@@ -15,7 +14,6 @@ exports.beersku_list = asyncHandler(async (req, res, next) => {
     .exec();
 
   res.render("beersku_list", {
-    title: "Beer SKU List",
     beersku_list: beerSkus,
   });
 });
@@ -38,7 +36,7 @@ exports.beersku_create_get = asyncHandler(async (req, res, next) => {
     .populate("brewery")
     .exec();
 
-  res.render("beersku_form", { title: "Create New Beer SKU", beers });
+  res.render("beersku_form", { crud_op: "create", beers });
 });
 
 // Handle beer SKU create on POST
@@ -96,7 +94,7 @@ exports.beersku_create_post = [
         .exec();
 
       res.render("beersku_form", {
-        title: "Create New Beer SKU",
+        crud_op: "create",
         beers,
         beersku: beerSku,
         selected_beer: beerSku.beer._id,
@@ -122,7 +120,7 @@ exports.beersku_create_post = [
 
 // Display beer SKU delete form on GET
 exports.beersku_delete_get = asyncHandler(async (req, res, next) => {
-  const beerSku = await BeerSku.findById(req.params.id);
+  const beerSku = await BeerSku.findById(req.params.id).populate("beer").exec();
 
   if (beerSku === null) {
     // Could not find beer SKU with ID provided
@@ -130,7 +128,6 @@ exports.beersku_delete_get = asyncHandler(async (req, res, next) => {
   }
 
   res.render("beersku_delete", {
-    title: "Delete Beer SKU: " + beerSku._id,
     beersku: beerSku,
   });
 });
@@ -167,7 +164,7 @@ exports.beersku_update_get = asyncHandler(async (req, res, next) => {
   }
 
   res.render("beersku_form", {
-    title: "Update Beer SKU: " + beerSku._id,
+    crud_op: "update",
     beers,
     beersku: beerSku,
     selected_beer: beerSku.beer,
@@ -230,7 +227,7 @@ exports.beersku_update_post = [
         .exec();
 
       res.render("beersku_form", {
-        title: "Update Beer SKU: " + beerSku._id,
+        crud_op: "update",
         beers,
         beersku: beerSku,
         selected_beer: beerSku.beer,

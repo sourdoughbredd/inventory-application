@@ -11,7 +11,6 @@ exports.type_list = asyncHandler(async (req, res, next) => {
     .exec();
 
   res.render("type_list", {
-    title: "Beer Types",
     type_list: types,
   });
 });
@@ -35,7 +34,7 @@ exports.type_detail = asyncHandler(async (req, res, next) => {
 
 // Display Type create form on GET
 exports.type_create_get = asyncHandler(async (req, res, next) => {
-  res.render("type_form", { title: "Add New Beer Type" });
+  res.render("type_form", { crud_op: "create" });
 });
 
 // Handle Type create on POST
@@ -58,7 +57,7 @@ exports.type_create_post = [
     if (!errors.isEmpty()) {
       // Validation errors detected. Send error data back to form.
       res.render("type_form", {
-        title: "Create Beer Type",
+        crud_op: "create",
         type: type,
         errors: errors.array(),
       });
@@ -93,7 +92,6 @@ exports.type_delete_get = asyncHandler(async (req, res, next) => {
   }
 
   res.render("type_delete", {
-    title: "Delete Beer Type: " + type.name,
     type: type,
     beers_of_type: beersOfType,
   });
@@ -109,7 +107,6 @@ exports.type_delete_post = asyncHandler(async (req, res, next) => {
   if (beersOfType.length > 0) {
     // Beers of this type found. Render the delete page.
     res.render("type_delete", {
-      title: "Delete Beer Type: " + type.name,
       type: type,
       beers_of_type: beersOfType,
     });
@@ -130,7 +127,7 @@ exports.type_update_get = asyncHandler(async (req, res, next) => {
   }
 
   res.render("type_form", {
-    title: "Update Beer Type: " + type.name,
+    crud_op: "update",
     type: type,
   });
 });
@@ -158,7 +155,7 @@ exports.type_update_post = [
     if (!errors.isEmpty()) {
       // Validation errors detected. Send error data back to form.
       res.render("type_form", {
-        title: "Update Beer Type",
+        crud_op: "update",
         type: type,
         errors: errors.array(),
       });
