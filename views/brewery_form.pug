@@ -1,31 +1,37 @@
-extends layout 
+extends layout
 
-block content 
+block content
   h1 #{crud_op === "create" ? "Create New Brewery" : "Update Brewery: " + brewery._id}
 
   form(method="POST")
     div.form-group
       label(for="name") Brewery Name
-      input(type="text" name="name" required placeholder="Stone Brewing, Ballast Point Brewery, Lagunitas, etc." value=(brewery === undefined ? "" : brewery.name))
+      input(type="text" name="name" required placeholder="Ballast Point Brewery, Lagunitas, etc." value=(brewery === undefined ? "" : brewery.name))
     div.form-group
       label(for="description") Description
       input(type="text" name="description" placeholder="Craft brewery specializing in IPAs" value=(brewery === undefined ? "" : brewery.description))
     div.form-group
-      label(for="city") City
-      input(type="text" name="city" placeholder="San Diego, Petaluma, etc." value=(brewery === undefined ? "" : brewery.city))
+      label(for="country") Country
+      select#country(name='country' required data-country=(brewery === undefined ? "" : brewery.country))
+        option(value='') --Please select a country--
     div.form-group
       label(for="state") State
-      input(type="text" name="state" placeholder="California, etc." value=(brewery === undefined ? "" : brewery.state))
+      select#state(name='state' required data-state=(brewery === undefined ? "" : brewery.state))
+        option(value='') --Please select a state--
     div.form-group
-      label(for="country") Country
-      input(type="text" name="country" placeholder="USA, Belgium, etc." value=(brewery === undefined ? "" : brewery.country))
+      label(for="city") City
+      select#city(name='city' required data-city=(brewery === undefined ? "" : brewery.city))
+        option(value='') --Please select a city--
     div.form-group
       label(for="latitude_deg") Latitude (in degrees)
-      input(type="text" name="latitude_deg" placeholder="22.995, -18.847, etc." value=(brewery === undefined || brewery.location === undefined ? "" : brewery.location.coordinates[0]))
+      input#latitude_deg(type="text" name="latitude_deg" placeholder="22.995, -18.847, etc." value=(brewery === undefined || brewery.location === undefined ? "" : brewery.location.coordinates[0]))
     div.form-group
       label(for="longitude_deg") Longitude (in degrees)
-      input(type="text" name="longitude_deg" placeholder="40.374, -20.243, etc." value=(brewery === undefined || brewery.location === undefined ? "" : brewery.location.coordinates[1]))    
-    
+      input#longitude_deg(type="text" name="longitude_deg" placeholder="40.374, -20.243, etc." value=(brewery === undefined || brewery.location === undefined ? "" : brewery.location.coordinates[1]))
+    div.form-group.checkbox-group
+      label(for="autofill-checkbox") Autofill Latitude and Longitude (with State Lat-Lon)
+      input#autofill-checkbox(type='checkbox')
+
     div.form-group
       label(for="password") Admin Password
       input(type="password" name="password" required)
@@ -36,3 +42,6 @@ block content
     ul
       for error in errors 
         li!= error.msg
+
+
+  script(src="/javascripts/brewery_form.js")
