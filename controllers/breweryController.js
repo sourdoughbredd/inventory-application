@@ -43,18 +43,18 @@ exports.brewery_create_post = [
     .trim()
     .isLength({ min: 2 }),
   body("description").optional({ values: "falsy" }).trim(),
-  body("city", "City must be at least 2 characters.")
+  body("city", "City must be at least 1 characters.")
     .optional({ values: "falsy" })
     .trim()
-    .isLength({ min: 2 }),
-  body("state", "State must be at least 2 characters.")
+    .isLength({ min: 1 }),
+  body("state", "State must be at least 1 characters.")
     .optional({ values: "falsy" })
     .trim()
-    .isLength({ min: 2 }),
-  body("country", "Country must be at least 4 characters.")
+    .isLength({ min: 1 }),
+  body("country", "Countrys must be at least 1 characters.")
     .optional({ values: "falsy" })
     .trim()
-    .isLength({ min: 4 }),
+    .isLength({ min: 1 }),
   body("longitude_deg", "Longitude must be a number between -180 and 180.")
     .optional({ values: "falsy" })
     .trim()
@@ -84,6 +84,7 @@ exports.brewery_create_post = [
         Number(req.body.longitude_deg),
       ],
     };
+
     const brewery = new Brewery({
       _id: req.params.id,
       name: req.body.name,
@@ -203,18 +204,18 @@ exports.brewery_update_post = [
     .trim()
     .isLength({ min: 2 }),
   body("description").optional({ values: "falsy" }).trim(),
-  body("city", "City must be at least 2 characters.")
+  body("city", "City must be at least 1 characters.")
     .optional({ values: "falsy" })
     .trim()
-    .isLength({ min: 2 }),
-  body("state", "State must be at least 2 characters.")
+    .isLength({ min: 1 }),
+  body("state", "State must be at least 1 characters.")
     .optional({ values: "falsy" })
     .trim()
-    .isLength({ min: 2 }),
-  body("country", "Country must be at least 4 characters.")
+    .isLength({ min: 1 }),
+  body("country", "Countrys must be at least 1 characters.")
     .optional({ values: "falsy" })
     .trim()
-    .isLength({ min: 4 }),
+    .isLength({ min: 1 }),
   body("longitude_deg", "Longitude must be a number between -180 and 180.")
     .optional({ values: "falsy" })
     .trim()
@@ -253,8 +254,6 @@ exports.brewery_update_post = [
       country: req.body.country,
       location,
     });
-
-    console.log(errors.array());
 
     // Check for errors before continuing
     if (!errors.isEmpty()) {
