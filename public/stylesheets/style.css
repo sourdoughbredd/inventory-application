@@ -28,3 +28,8 @@ body {
   max-width: 300px;
   margin-bottom: 10px;
 }
+
+.checkbox-group {
+  flex-direction: row-reverse;
+  gap: 12px;
+}
