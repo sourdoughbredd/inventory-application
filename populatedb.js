@@ -122,8 +122,8 @@ async function createBreweries() {
       "Golden Brewery",
       "Famous for its lager beers.",
       "Golden",
-      "Colorado",
-      "USA",
+      "CO",
+      "US",
       { type: "Point", coordinates: [39.7555, -105.2211] }
     ),
     breweryCreate(
@@ -131,8 +131,8 @@ async function createBreweries() {
       "Mountain Craft",
       "Specializes in craft ales and stouts.",
       "Asheville",
-      "North Carolina",
-      "USA",
+      "NC",
+      "US",
       { type: "Point", coordinates: [35.5951, -82.5515] }
     ),
     breweryCreate(
@@ -140,8 +140,8 @@ async function createBreweries() {
       "River Ale House",
       "Known for riverfront views and pale ales.",
       "Portland",
-      "Oregon",
-      "USA",
+      "OR",
+      "US",
       { type: "Point", coordinates: [45.5231, -122.6765] }
     ),
     breweryCreate(
@@ -149,8 +149,8 @@ async function createBreweries() {
       "Brewmasters International",
       "Wide selection of international beers.",
       "Brussels",
-      "Brussels-Capital",
-      "Belgium",
+      "BRU",
+      "BE",
       { type: "Point", coordinates: [50.8503, 4.3517] }
     ),
     breweryCreate(
@@ -158,8 +158,8 @@ async function createBreweries() {
       "Old Town Brewery",
       "Historic brewery with a variety of classic styles.",
       "Dublin",
-      "Dublin",
-      "Ireland",
+      "D",
+      "IE",
       { type: "Point", coordinates: [53.3498, -6.2603] }
     ),
     // Add more breweries as needed
