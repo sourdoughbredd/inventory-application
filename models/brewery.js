@@ -19,8 +19,8 @@ const BrewerySchema = new Schema({
   name: { type: String, required: true, maxLength: 100 },
   description: { type: String },
   city: { type: String },
-  state: { type: String },
-  country: { type: String },
+  state: { type: String, minLength: 1 },
+  country: { type: String, minLength: 1 },
   location: { type: PointSchema },
 });
 
