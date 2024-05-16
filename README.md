@@ -4,7 +4,7 @@ An application to manage and track inventory, particularly for beer merchants an
 
 ## Description
 
-This Inventory Application is designed to help beer merchants manage their inventory of different beer products. It provides features to add, update, delete, and view details of breweries, beer types, beers, and individual beer SKUs. The application is built using Node.js and Express, with a MongoDB database for storage.
+This Inventory Application is designed to help beer sellers manage their inventory of different beer products. It provides features to add, update, delete, and view details of breweries, beer types, beers, and individual beer SKUs. The application is built using Node.js and Express, with a MongoDB database for storage.
 
 ## Table of Contents
 
